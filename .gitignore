@@ -23,3 +23,8 @@ hs_err_pid*
 
 # Ansible Retry files
 *.retry
+# Ansible log files
+*.log
+
+# Local Vagrant environment
+.vagrant/
