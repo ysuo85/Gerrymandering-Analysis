@@ -32,8 +32,9 @@
 
   - name: Clone Gerrymandering-Analysis from Github 
     git: 
-      repo: 'https://github.com/bkestelman/Gerrymandering-Analysis'
+      repo: 'https://github.com/ysuo85/Gerrymandering-Analysis'
       dest: /home/ubuntu/Gerrymandering-Analysis
+      version: vagrant-setup
       force: yes
   - name: Move html files to /usr/share/nginx/html
     command: mv /home/ubuntu/Gerrymandering-Analysis/308uipages/ /var/www/html/
