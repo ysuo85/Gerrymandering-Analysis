@@ -1,4 +1,4 @@
-Assuming you have Vagrant installed, from this directory just run
+Assuming you have [Vagrant installed](https://www.vagrantup.com/intro/getting-started/install.html), from this directory just run
 ```
 vagrant up
 ```
