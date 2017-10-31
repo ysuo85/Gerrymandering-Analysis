@@ -19,6 +19,9 @@ jar {
 
 repositories {
 	mavenCentral()
+	maven {
+		url 'https://repo.spring.io/libs-milestone'
+	}
 }
 
 sourceCompatibility = 1.8
@@ -27,5 +30,7 @@ targetCompatibility = 1.8
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 	compile("org.springframework.boot:spring-boot-devtools")
+	compile("org.springframework.security:spring-security-web:4.2.3.RELEASE")
+	compile("org.springframework.security:spring-security-config:4.2.3.RELEASE")
 	testCompile("junit:junit")
 }

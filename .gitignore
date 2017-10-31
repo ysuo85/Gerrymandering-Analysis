@@ -28,3 +28,13 @@ hs_err_pid*
 
 # Local Vagrant environment
 .vagrant/
+
+# IntelliJ files
+.idea/
+*.iml
+
+# Gradle files
+.gradle/
+
+# build path
+build/
