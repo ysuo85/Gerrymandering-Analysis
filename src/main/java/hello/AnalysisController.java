@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.util.Scanner;
 import java.io.InputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,10 +22,11 @@ import java.nio.charset.StandardCharsets;
 @RestController
 public class AnalysisController {
 
-//	@Autowired
-//	private ResourceLoader resourceLoader;
 	@Value("classpath:out.geojson")
 	private Resource geoJsonResource;
+
+	// TODO: add support for different years
+	// TODO: use database instead of file resource
 
 	/**
 	 * @param stateName full name of state (e.g. "New York")
@@ -47,7 +47,6 @@ public class AnalysisController {
 		try {
 			InputStream inputStream  = geoJsonResource.getInputStream();	
 			ret = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-			//ret = new Scanner(file).useDelimiter("\\Z").next();
 		}
 		catch(FileNotFoundException e) {
 			System.err.println("File Not Found Exception in AnalysisController loadStateTEST");
@@ -57,57 +56,18 @@ public class AnalysisController {
 			System.err.println("IOException in AnalysisController loadStateTEST");
 			e.printStackTrace();
 		}
-/*		ApplicationContext context = new ClassPathXmlApplicationContext("files.xml");
-		Resource resource = context.getResource("classpath:out.geojson");
-		try{
-		  InputStream is = resource.getInputStream();
-		  BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-		  String line;
-		  while ((line = br.readLine()) != null) {
-		     System.out.println(line);
-		  }
-		  br.close();
-
-		}catch(IOException e){
-			e.printStackTrace();
-		}*/
-
-/*		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-		final Resource fileResource = resourceLoader.getResource("classpath:out.geojson");
-		try {
-			File file = fileResource.getFile();	
-			ret = new Scanner(file).useDelimiter("\\Z").next();
-		}
-		catch(FileNotFoundException e) {
-			System.err.println("File Not Found Exception in AnalysisController loadStateTEST");
-			e.printStackTrace();
-		}
-		catch(IOException e) {
-			System.err.println("IOException in AnalysisController loadStateTEST");
-			e.printStackTrace();
-		}*/
-		/*try {
-			Resource geoJson = resourceLoader.getResource("classpath:out.geojson");
-			InputStream geoJsonStream = geoJson.getInputStream();
-			ret = IOUtils.toString(geoJsonStream, StandardCharsets.UTF_8);
-		}
-		catch(IOException e) {
-			System.err.println("IOException in AnalysisController loadStateTEST, reading geoJson with ResourceLoader and InputStream");
-			e.printStackTrace();
-		}*/
-		
-/*		String filename = "out.geojson";
-		ClassLoader classLoader = getClass().getClassLoader();
-		File geoJsonFile = new File(classLoader.getResource(filename).getFile());
-		try {
-			ret = new Scanner(geoJsonFile).useDelimiter("\\Z").next();
-		}
-		catch(FileNotFoundException e) {
-			System.err.println("File Not Found Exception in AnalysisController loadStateTEST");
-			e.printStackTrace();
-		}*/
 		return ret;
 	}
+
+	@RequestMapping("/runMeasures")
+	@ResponseBody
+	public String runMeasures(@RequestParam(value="stateName", required=false, defaultValue="New York" String stateName) {
+		String ret = "";
+		// TODO: call AnalysisService.runMeasures(stateName)
+		// TODO: use Jackson to change results into json
+		return ret;
+	}
+
 
 }

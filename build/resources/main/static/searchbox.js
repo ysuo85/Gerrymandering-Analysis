@@ -162,8 +162,13 @@ map.data.addListener('click', function(event) {
 		var stateName = event.feature.f.Name;
 		console.log("stateName: " + stateName);
 
+		map.panTo(event.latLng);
+
 		if(stateName == "New York") {
-			// Zoom in (TODO) on clicked state and send AJAX request to /loadState, then display districts in clicked state
+			// Zoom in on clicked state 
+			map.setZoom(6);
+
+			// Send AJAX request to /loadState, then display districts in clicked state
 			var loadStateReq = new XMLHttpRequest();
 			loadStateReq.onreadystatechange = function() {
 			displayState(loadStateReq.response);
