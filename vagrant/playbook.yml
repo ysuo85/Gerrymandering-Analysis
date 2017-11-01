@@ -1,0 +1,55 @@
+---
+- hosts: all
+  become: true
+  become_user: root 
+  become_method: sudo
+
+  tasks:
+
+  - name: Clone Gerrymandering-Analysis from Github 
+    become_user: ubuntu
+    git: 
+      repo: 'https://github.com/ysuo85/Gerrymandering-Analysis'
+      dest: /home/ubuntu/Gerrymandering-Analysis
+      version: dev 
+      force: yes
+
+  - name: Install nginx
+    apt:
+      name: nginx
+      update_cache: yes
+      
+  - name: Add Oracle Java apt repo 
+    apt_repository:
+      repo: 'ppa:webupd8team/java'
+      state: present
+  - name: Accept Oracle license
+    debconf:
+      name: 'oracle-java8-installer'
+      question: 'shared/accepted-oracle-license-v1-1'
+      value: 'true'
+      vtype: 'select'
+  - name: Install Oracle JDK
+    apt: 
+      name: oracle-java8-installer
+      update_cache: yes
+
+  - name: Install gradle
+    apt: 
+      name: gradle
+      update_cache: yes
+  - name: Set up gradle wrapper 
+    become_user: ubuntu
+    shell: gradle wrapper --gradle-version 2.13 
+    args:
+      chdir: /home/ubuntu/Gerrymandering-Analysis
+
+  - name: Move html files to /usr/share/nginx/html
+    command: mv /home/ubuntu/Gerrymandering-Analysis/308uipages/ /var/www/html/
+  - name: Delete default nginx index.html
+    file: 
+      path: /var/www/html/index.nginx-debian.html
+      state: absent
+  - name: Move sample html file to site root
+    command: mv /var/www/html/308uipages/basic\ user.html /var/www/html/index.html 
+
