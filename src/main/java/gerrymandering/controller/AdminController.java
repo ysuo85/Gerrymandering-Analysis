@@ -1,13 +1,7 @@
-package gerrymandering;
+package gerrymandering.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.ServletRequest;
-import java.util.Map;
 
 /**
  * Created by yisuo on 10/30/17.
@@ -25,7 +19,7 @@ public class AdminController {
     }
 
     @RequestMapping("/login")
-    public String login(ServletRequest request){
+    public String login(){
         return "loginView";
     }
 }
