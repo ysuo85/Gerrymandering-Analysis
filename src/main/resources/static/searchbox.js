@@ -157,8 +157,23 @@ map.data.addListener('click', function(event) {
 		console.log('map.data clicked');
 		console.log(event.feature);
 		event.feature.setProperty('isColorful', true);
+
+		// TODO: Zoom in on clicked state and send AJAX request to /loadState, then display districts in clicked state
+		var loadStateReq = new XMLHttpRequest();
+		loadStateReq.onreadystatechange = function() {
+	displayState(loadStateReq.response);
+};
+		loadStateReq.open("GET", "/loadState");
+		loadStateReq.send();
 		
 		});
+
+function displayState(response) {
+	console.log("Display State Stub");
+	console.log(response);
+	// TODO
+}
+	
 
 
 
