@@ -1,0 +1,6 @@
+public MeasureResult {
+
+	public MeasureResult() {
+	}
+
+}
