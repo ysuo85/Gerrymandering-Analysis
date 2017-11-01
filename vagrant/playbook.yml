@@ -11,7 +11,7 @@
     git: 
       repo: 'https://github.com/ysuo85/Gerrymandering-Analysis'
       dest: /home/ubuntu/Gerrymandering-Analysis
-      version: dev 
+      version: displayDistricts 
       force: yes
 
   - name: Install nginx
