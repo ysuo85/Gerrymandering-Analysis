@@ -42,6 +42,8 @@ public class AnalysisController {
 	public String loadState(@RequestParam(value="stateName", required=false, defaultValue="New York") String stateName) {
 		String ret = "";
 
+		// TODO: switch on stateName to load correct resource (currently always loads New York)
+
 		try {
 			InputStream inputStream  = geoJsonResource.getInputStream();	
 			ret = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
