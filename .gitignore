@@ -2,8 +2,7 @@
 *.class
 
 # Log file
-*.log
-
+*.log 
 # BlueJ files
 *.ctxt
 
@@ -28,3 +27,10 @@ hs_err_pid*
 
 # Local Vagrant environment
 .vagrant/
+=======
+.DS_Store
+build/
+.gradle/
+.vagrant/
+*.retry
+*.log

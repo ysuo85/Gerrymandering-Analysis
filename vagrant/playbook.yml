@@ -7,10 +7,11 @@
   tasks:
 
   - name: Clone Gerrymandering-Analysis from Github 
+    become_user: ubuntu
     git: 
       repo: 'https://github.com/ysuo85/Gerrymandering-Analysis'
       dest: /home/ubuntu/Gerrymandering-Analysis
-      version: vagrant-setup
+      version: dev 
       force: yes
 
   - name: Install nginx
@@ -38,6 +39,7 @@
       name: gradle
       update_cache: yes
   - name: Set up gradle wrapper 
+    become_user: ubuntu
     shell: gradle wrapper --gradle-version 2.13 
     args:
       chdir: /home/ubuntu/Gerrymandering-Analysis
