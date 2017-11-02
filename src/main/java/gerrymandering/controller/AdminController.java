@@ -25,6 +25,12 @@ public class AdminController {
 
     @RequestMapping("/login")
     public String login(){
-        return "loginView";
+        return "adminLogin";
     }
+
+    @RequestMapping("/admin")
+    public String admin(){
+        return "adminDashBoard";
+    }
+
 }

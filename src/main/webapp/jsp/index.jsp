@@ -4,12 +4,48 @@
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="/resources/style/index.css" rel="stylesheet" type="text/css">
+    <link href="../style/index.css" rel="stylesheet" type="text/css">
+
   </head><body>
     <div class="section">
       <div class="col-md-12 text-right">
-        <a href="/admin" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Administrators</a>
-
+        <a href="./basic user register.html" class="btn btn-lg btn-primary"><i class="fa fa-fw fa-lg fa-laptop" style="margin-right:5px"></i>Advanced Users</a>
+        <a href="#openModal" class="btn btn-lg btn-primary" style="margin-left: 10px"><i class="fa fa-bar-chart fa-fw fa-lg" style="margin-right:5px"></i>Administrators</a>
+        <div class="modalDialog" id="openModal">
+          <div>
+            <a href="#close" title="Close" class="close">X</a>
+            <h2>Administration Log-In</h2>
+            <form name="f" action="/login" method="post">
+                    <fieldset>
+                        <legend>Please Login</legend>
+                        <c:if test="${param.error ne null}">
+                            <div>
+                                Invalid username or password.
+                            </div>
+                        </c:if>
+                        <c:if test="${param.logout ne null}">
+                            <div>
+                                You have logged out.
+                            </div>
+                        </c:if>
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username"/>
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password"/>
+                        <div>
+                            <button type="submit" class="btn btn-lg btn-primary" data-toggle="modal"  style="margin-right:5px">Log in</button>
+                        </div>
+                    </fieldset>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            <br>
+            <a class="btn btn-lg btn-primary" data-toggle="modal" href="./basic user.html"><i class="fa fa-fw fa-lg fa-laptop" style="margin-right:5px"></i>Log In</a>
+            <a href="#close" title="Close" class="close">
+              
+                 </a>
+            <a class="btn btn-lg btn-primary" data-toggle="modal"><i class="fa fa-fw fa-lg fa-laptop" style="margin-right:5px"></i>Cancel</a>
+          </div>
+        </div>
         <div class="section">
           <div class="container">
             <div class="row">
@@ -67,7 +103,7 @@
                     <div class="carousel slide" id="carousel-example" data-interval="false" data-ride="carousel">
                       <div class="carousel-inner">
                         <div class="item active">
-                          <img src="/resources/img/welcome.jpg">
+                          <img src="../img/welcome.jpg">
                           <div class="carousel-caption">
                             <h2>Gerrymandering of the United States</h2>
                           </div>
@@ -176,3 +212,4 @@
   
 
 </body></html>
+
