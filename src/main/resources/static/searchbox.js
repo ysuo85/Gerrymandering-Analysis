@@ -19,72 +19,61 @@ var input = document.getElementById('pac-input');
 var searchBox = new google.maps.places.SearchBox(input);
 map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-/*
-map.addListener('click', function(event) {
-		var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
-		var marker = new google.maps.Marker({position: position, map: map});
-		});
-*/
-var init = true;
 // Bias the SearchBox results towards current map's viewport.
 map.addListener('bounds_changed', function() {
-		if(init) {
-		init = false;
-		return;
-		}
-		searchBox.setBounds(map.getBounds());
-		resetStyle(); // Make the Polygon at the center of the map red and make everything else grey (see function resetStyle())
-		map.data.revertStyle();
+	searchBox.setBounds(map.getBounds());
+	resetStyle(); // Make the Polygon at the center of the map red and make everything else grey (see function resetStyle())
+	map.data.revertStyle();
 });
 
 var markers = [];
 // Listen for the event fired when the user selects a prediction and retrieve
 // more details for that place.
 searchBox.addListener('places_changed', function() {
-		var places = searchBox.getPlaces();
+	var places = searchBox.getPlaces();
 
-		if (places.length == 0) {
+	if (places.length == 0) {
 		return;
+	}
+
+	// Clear out the old markers.
+	markers.forEach(function(marker) {
+		marker.setMap(null);
+	});
+	markers = [];
+
+
+	// For each place, get the icon, name and location.
+	var bounds = new google.maps.LatLngBounds();
+	places.forEach(function(place) {
+		if (!place.geometry) {
+			console.log("Returned place contains no geometry");
+			return;
 		}
+		var icon = {
+		url: place.icon,
+		size: new google.maps.Size(71, 71),
+		origin: new google.maps.Point(0, 0),
+		anchor: new google.maps.Point(17, 34),
+		scaledSize: new google.maps.Size(25, 25)
+		};
 
-		// Clear out the old markers.
-		markers.forEach(function(marker) {
-				marker.setMap(null);
-				});
-		markers = [];
+		// Create a marker for each place.
+		markers.push(new google.maps.Marker({
+		map: map,
+		icon: icon,
+		title: place.name,
+		position: place.geometry.location
+		}));
 
-
-		// For each place, get the icon, name and location.
-		var bounds = new google.maps.LatLngBounds();
-		places.forEach(function(place) {
-				if (!place.geometry) {
-				console.log("Returned place contains no geometry");
-				return;
-				}
-				var icon = {
-url: place.icon,
-size: new google.maps.Size(71, 71),
-origin: new google.maps.Point(0, 0),
-anchor: new google.maps.Point(17, 34),
-scaledSize: new google.maps.Size(25, 25)
-};
-
-// Create a marker for each place.
-markers.push(new google.maps.Marker({
-map: map,
-icon: icon,
-title: place.name,
-position: place.geometry.location
-}));
-
-if (place.geometry.viewport) {
-	// Only geocodes have viewport.
-	bounds.union(place.geometry.viewport);
-} else {
-	bounds.extend(place.geometry.location);
-}
-});
-map.fitBounds(bounds);
+		if (place.geometry.viewport) {
+			// Only geocodes have viewport.
+			bounds.union(place.geometry.viewport);
+		} else {
+			bounds.extend(place.geometry.location);
+		}
+	});
+	map.fitBounds(bounds);
 });
 
 /**
@@ -104,27 +93,27 @@ map.fitBounds(bounds);
  * Open issue: how to handle features with MultiPolygon geometry 
  * console.log(feature.getGeometry()) is your friend, should reveal solution
  * The Google Maps API Reference Documentation contains useful information not in the Guides
-**/
+ **/
 function resetStyle() {
 	map.data.setStyle(function(feature) {
-		var color = 'grey'; // Make everything grey by default
-		if (feature.getProperty('isColorful')) {
+			var color = 'grey'; // Make everything grey by default
+			if (feature.getProperty('isColorful')) {
 			color = feature.getProperty('color');
-		}
-		var geom = feature.getGeometry();
-		if(geom.getType() == "Polygon") {
+			}
+			var geom = feature.getGeometry();
+			if(geom.getType() == "Polygon") {
 			var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
 			if(google.maps.geometry.poly.containsLocation(map.getCenter(), poly)) { 
-				color = 'red'; // If feature contains center of map, highlight it
+			color = 'red'; // If feature contains center of map, highlight it
 			}
-		}
-		return /** @type {google.maps.Data.StyleOptions} */({
-		clickable: true,
-		fillColor: color,
-		strokeColor: color,
-		strokeWeight: 2
-		});
-	});
+			}
+			return /** @type {google.maps.Data.StyleOptions} */({
+clickable: true,
+fillColor: color,
+strokeColor: color,
+strokeWeight: 2
+});
+			});
 } 
 
 
@@ -165,31 +154,28 @@ map.data.addListener('click', function(event) {
 		map.panTo(event.latLng);
 
 		if(stateName == "New York") {
-			// Zoom in on clicked state 
-			map.setZoom(6);
+		// Zoom in on clicked state 
+		map.setZoom(6);
 
-			// Send AJAX request to /loadState, then display districts in clicked state
-			var loadStateReq = new XMLHttpRequest();
-			loadStateReq.onreadystatechange = function() {
-			displayState(loadStateReq.response);
-			};
-			loadStateReq.open("GET", "/loadState?stateName=" + stateName);
-			loadStateReq.send();
+		// Send AJAX request to /loadState, then display districts in clicked state
+		var loadStateReq = new XMLHttpRequest();
+		loadStateReq.onreadystatechange = function() {
+		displayState(loadStateReq.response);
+		};
+		loadStateReq.open("GET", "/loadState?stateName=" + stateName);
+		loadStateReq.send();
 		}
-		
-		});
 
+	// Display measure results
+	// TODO: use actual request to get data from server
+	displayMeasureResults();
+
+});
 function displayState(response) {
 	console.log("Display State Stub");
 	console.log(response);
 	map.data.addGeoJson(JSON.parse(response));
-	// TODO
 }
-	
-
-
-
-
 
 
 map.data.addListener('mouseover', function(event) {
@@ -279,14 +265,14 @@ title: 'New York'
 });
 
 marker1.addListener('click', function() {
-       map.setZoom(6);
-       map.setCenter(marker1.getPosition());
-  });
-  /*
-marker1.addListener('click', function() {
-		infowindow.open(map, marker1);
-		}); 
-*/
+		map.setZoom(6);
+		map.setCenter(marker1.getPosition());
+		});
+/*
+   marker1.addListener('click', function() {
+   infowindow.open(map, marker1);
+   }); 
+ */
 
 
 
@@ -297,24 +283,24 @@ map: map,
 title: 'Virginia'
 });
 marker2.addListener('click', function() {
-       map.setZoom(6);
-       map.setCenter(marker2.getPosition());
-  });
- /*
-marker2.addListener('click', function() {
-		infowindow_2.open(map, marker2);
-		}); 
-*/
+		map.setZoom(6);
+		map.setCenter(marker2.getPosition());
+		});
+/*
+   marker2.addListener('click', function() {
+   infowindow_2.open(map, marker2);
+   }); 
+ */
 marker2.addListener('click', function(event) {
 
 
 		map.data.forEach(function (feature) {
-    		map.data.remove(feature);
-		});  
+				map.data.remove(feature);
+				});  
 
 		map.data.addGeoJson(data);
-    
-		
+
+
 		map.data.addGeoJson(tempObject15);
 		map.data.addGeoJson(tempObject16);
 		map.data.addGeoJson(tempObject17);
@@ -327,8 +313,8 @@ marker2.addListener('click', function(event) {
 		map.data.addGeoJson(tempObject24);
 		map.data.addGeoJson(tempObject25);
 
-      
-		});
+
+});
 
 
 
@@ -339,43 +325,43 @@ title: 'North Carolina'
 });
 
 marker3.addListener('click', function() {
-       map.setZoom(6);
-       map.setCenter(marker3.getPosition());
-  });
+		map.setZoom(6);
+		map.setCenter(marker3.getPosition());
+		});
 
 /*
-marker3.addListener('click', function() {
-		infowindow_3.open(map, marker3);
-		}); 
-*/
+   marker3.addListener('click', function() {
+   infowindow_3.open(map, marker3);
+   }); 
+ */
 marker3.addListener('click', function(event) {
 
-	/* Setup event handler to remove GeoJSON features*/
-    
-    
+		/* Setup event handler to remove GeoJSON features*/
 
-map.data.forEach(function (feature) {
-    map.data.remove(feature);
-});  
 
-map.data.addGeoJson(data);
-    
-    
-		
-	map.data.addGeoJson(tempObject2);
-    map.data.addGeoJson(tempObject3);
-    map.data.addGeoJson(tempObject4);
-    map.data.addGeoJson(tempObject5);
-    map.data.addGeoJson(tempObject6);
-    map.data.addGeoJson(tempObject7);
-    map.data.addGeoJson(tempObject8);
-    map.data.addGeoJson(tempObject9);
-    map.data.addGeoJson(tempObject10);
-    map.data.addGeoJson(tempObject11);
-    map.data.addGeoJson(tempObject12);
-    map.data.addGeoJson(tempObject13);
-    map.data.addGeoJson(tempObject14);
-    
+
+		map.data.forEach(function (feature) {
+				map.data.remove(feature);
+				});  
+
+		map.data.addGeoJson(data);
+
+
+
+		map.data.addGeoJson(tempObject2);
+		map.data.addGeoJson(tempObject3);
+		map.data.addGeoJson(tempObject4);
+		map.data.addGeoJson(tempObject5);
+		map.data.addGeoJson(tempObject6);
+		map.data.addGeoJson(tempObject7);
+		map.data.addGeoJson(tempObject8);
+		map.data.addGeoJson(tempObject9);
+		map.data.addGeoJson(tempObject10);
+		map.data.addGeoJson(tempObject11);
+		map.data.addGeoJson(tempObject12);
+		map.data.addGeoJson(tempObject13);
+		map.data.addGeoJson(tempObject14);
+
 });
 
 
