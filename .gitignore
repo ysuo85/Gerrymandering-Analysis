@@ -20,7 +20,6 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-<<<<<<< HEAD
 # Ansible Retry files
 *.retry
 # Ansible log files
@@ -28,6 +27,7 @@ hs_err_pid*
 
 # Local Vagrant environment
 .vagrant/
+
 
 # IntelliJ files
 .idea/
@@ -38,11 +38,7 @@ hs_err_pid*
 
 # build path
 build/
-=======
+
+# Mac files
 .DS_Store
-build/
-.gradle/
-.vagrant/
-*.retry
-*.log
->>>>>>> UI_updates
+
