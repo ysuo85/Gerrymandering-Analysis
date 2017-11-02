@@ -22,6 +22,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
             .logout()
+//                .logoutUrl("redirect:/www/index.html")
+//                .logoutSuccessUrl("redirect:/www/index.html")
+//                .logoutSuccessHandler(logoutSuccessHandler)
+//                .invalidateHttpSession(true)
+//                .addLogoutHandler(logoutHandler)
+//                .deleteCookies(cookieNamesToClear)
                 .permitAll();
     }
 

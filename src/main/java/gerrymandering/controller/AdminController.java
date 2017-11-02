@@ -2,6 +2,7 @@ package gerrymandering.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.web.authentication.*;
 
 /**
  * Created by yisuo on 10/30/17.
@@ -32,5 +33,11 @@ public class AdminController {
     public String admin(){
         return "adminDashBoard";
     }
+
+//    @RequestMapping("/logout")
+//    public String logout() {
+//        return "redirect:/www/index.html";
+//    }
+//
 
 }

@@ -7,14 +7,9 @@
         <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
     </head><body>
 
-<div id="carousel-example" data-interval="false" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner"><div class="item active">
-        <img src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png">
-            <div class="carousel-caption">
-            </div></div>
-            </div><a class="left carousel-control" href="#carousel-example" data-slide="prev">
-                <i class="icon-prev  fa fa-angle-left"></i></a><a class="right carousel-control" href="#carousel-example" data-slide="next">
-                <i class="icon-next fa fa-angle-right"></i></a></div><div class="section"><div class="container"><div class="row"><div class="col-md-12">
+            <div class="section"><div class="container"><div class="row"><div class="col-md-12">
+
+
                 <form class="form-horizontal text-right" role="form" name="f" action="/login" method="post">
                 <fieldset>
                             <legend>Please Login</legend>

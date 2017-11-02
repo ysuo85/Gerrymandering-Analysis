@@ -26,6 +26,17 @@
                             <li>
                                 <a href="#">Contacts</a>
                             </li>
+                            <li>
+                                <form name="f" action="/logout" method="post">
+                                    <c:if test="${not empty pageContext.request.remoteUser}">
+                                        <div>
+                                            <button type="submit" class="btn">Log out</button>
+                                        </div>
+
+                                    </c:if>
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 </div>
