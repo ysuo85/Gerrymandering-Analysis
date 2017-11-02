@@ -1,4 +1,4 @@
-public MeasureResult {
+public class MeasureResult {
 
 	public MeasureResult() {
 	}

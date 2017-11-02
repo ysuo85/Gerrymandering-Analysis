@@ -1,3 +1,6 @@
+import java.util.Map;
+import java.util.HashMap;
+
 public class AnalysisService {
 	private static final AnalysisService instance = new AnalysisService();
 	
@@ -10,7 +13,7 @@ public class AnalysisService {
 
 	public Map<String,MeasureResult> runMeasures() {
 		// TODO: call EfficiencyGap, ConsistentAdvantage, LopsidedTest
-		return new Map<String,MeasureResult>();
+		return new HashMap<String,MeasureResult>();
 	}
 
 }

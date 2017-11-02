@@ -1,1 +1,1 @@
-src/main/java/hello/
+src/main/java/gerrymandering/

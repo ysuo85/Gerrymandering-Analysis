@@ -9,5 +9,6 @@ public interface StateMeasure {
 			System.err.println("Attempting to run StateMeasure on non-State BipartisanRegion");
 			e.printStackTrace();
 		}
+		return null;
 	}
 } 
