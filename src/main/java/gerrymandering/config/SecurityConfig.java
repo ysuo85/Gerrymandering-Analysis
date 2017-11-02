@@ -29,6 +29,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .addLogoutHandler(logoutHandler)
 //                .deleteCookies(cookieNamesToClear)
                 .permitAll();
+
+        http
+            .headers()
+                .frameOptions()
+                .sameOrigin();
     }
 
     @Autowired

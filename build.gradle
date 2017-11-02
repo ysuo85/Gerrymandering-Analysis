@@ -37,8 +37,8 @@ dependencies {
 	compile("org.springframework.security:spring-security-web:4.2.3.RELEASE")
 	compile("org.springframework.security:spring-security-config:4.2.3.RELEASE")
 
-	compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.13'
 	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+	compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.13'
 
 	testCompile("junit:junit")
 }

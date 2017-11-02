@@ -1,3 +1,4 @@
+
 // This example adds a search box to a map, using the Google Place Autocomplete
 // feature. People can enter geographical searches. The search box will return a
 // pick list containing a mix of places and predicted search terms.
@@ -128,10 +129,22 @@ function resetStyle() {
 } 
 
 
+var coords={
+			'NY': '43.385888,-75.436524',
+			'VA':'37.992699,-78.292969',
+			'NC':'35.814249,-80.709961'
+};
+function changeMap(city){
+	var c = coords[city].split(',');
+	map.setCenter(new google.maps.LatLng(c[0],c[1]));
+}
+
+
 var newYork = {lat: 43.385888, lng: -75.436524};
 var virginia = {lat: 37.992699, lng: -78.292969};
 var northCarolina = {lat: 35.814249, lng: -80.709961};
 var texas = {lat:31.968599 , lng: -99.901813 };
+
 map.data.setStyle(function(feature) {
 		var color = 'blue';
 		if (feature.getProperty('isColorful')) {
@@ -159,6 +172,7 @@ map.data.addListener('click', function(event) {
 		event.feature.setProperty('isColorful', true);
 		
 		});
+
 
 
 
