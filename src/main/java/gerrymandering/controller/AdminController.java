@@ -10,7 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
     @RequestMapping("/")
     public String root() {
-        return "redirect:/index";
+        return "redirect:/www/index.html";
+    }
+
+    @RequestMapping("/www/")
+    public String staticBase() {
+        return "redirect:/www/index.html";
     }
 
     @RequestMapping("/index")
