@@ -1,3 +1,8 @@
+package gerrymandering.measure;
+
+import gerrymandering.model.BipartisanRegion;
+import gerrymandering.model.State;
+
 public interface StateMeasure {
 
 	MeasureResult runStateMeasure(State state);

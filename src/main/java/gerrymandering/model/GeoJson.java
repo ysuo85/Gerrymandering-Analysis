@@ -1,4 +1,4 @@
-package gerrymandering;
+package gerrymandering.model;
 
 public class GeoJson {
 
