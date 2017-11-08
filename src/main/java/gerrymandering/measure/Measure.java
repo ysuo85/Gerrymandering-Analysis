@@ -1,7 +1,7 @@
 package gerrymandering.measure;
 
-import gerrymandering.model.BipartisanRegion;
+import gerrymandering.model.MultiDistrictRegion;
 
 public interface Measure {
-	MeasureResult runMeasure(BipartisanRegion bipartisanRegion);
+	MeasureResults runMeasure(MultiDistrictRegion region);
 }

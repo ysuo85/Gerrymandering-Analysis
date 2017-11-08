@@ -5,9 +5,9 @@ import gerrymandering.model.State;
 
 public interface StateMeasure {
 
-	MeasureResult runStateMeasure(State state);
+	MeasureResults runStateMeasure(State state);
 
-	default MeasureResult runMeasure(BipartisanRegion bipartisanRegion) {
+	default MeasureResults runMeasure(BipartisanRegion bipartisanRegion) {
 		try {
 			return runStateMeasure((State) bipartisanRegion);
 		} catch(ClassCastException e) {

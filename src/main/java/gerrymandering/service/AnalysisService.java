@@ -1,5 +1,5 @@
 package gerrymandering.service;
-import gerrymandering.measure.MeasureResult;
+import gerrymandering.measure.MeasureResults;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -14,9 +14,9 @@ public class AnalysisService {
 		return instance;
 	}
 
-	public Map<String,MeasureResult> runMeasures() {
+	public Map<String,MeasureResults> runMeasures() {
 		// TODO: call EfficiencyGap, ConsistentAdvantage, LopsidedTest
-		return new HashMap<String,MeasureResult>();
+		return new HashMap<String,MeasureResults>();
 	}
 }
 	
