@@ -50,14 +50,10 @@ function main() {
       .domain([0, 1]) // Because Math.random returns numbers between 0 and 1
       .range([0, h]);
       */
-  var filters = [
-  ['State', 'New York'],
-    ['raceYear', '2012']
-  ];
 
 var demVotePercentage;
-var democratWinState=0;
-var republicanWinState=0;
+var democratWonState=0;
+var republicanWonState=0;
 var demVoteSum;
 var repVoteSum; 
 var demVotesArray;
@@ -68,6 +64,11 @@ var usedToWinRepVotes;
 var wastedRepVotes;
 var demDistrictCount=0;
 var repDistrictCount=0;
+var filters = [
+  ['State', 'New York'],
+  ['raceYear', '2012']
+];
+
 
 d3.json("/resources/js/test.json", function(data) {
   data = data.filter(function(row) {
@@ -76,46 +77,50 @@ d3.json("/resources/js/test.json", function(data) {
       
   });
 
-  /* calculate the winner of the state*/
-  demVotePercentage = data.map((e) => {return e['Dem Vote %'];}); 
+ /* calculate the winner of the state*/
+demVotePercentage = data.map((e) => {return e['Dem Vote %'];});
    
-  for(var i=0; i<demVotePercentage.length; i++)
-  {
-    if(demVotePercentage[i]>=0.5)
-    {
-      demDistrictCount = demDistrictCount+1;
-    }
-    else
-    {
-      repDistrictCount = repDistrictCount+1;
-    }
-  }
-  if(demDistrictCount>=(demVotePercentage.length/2))
-  {
-    democratWinState=1;
-  }
-  else{
-    republicanWinState=1;
-  }
 /* calculate total democratic votes and republican votes in the state for each party*/
-    demVotesArray = data.map((e) => {return e['DemVotes'];});
+    demVotesArray = data.map((e) => {
+      return typeof e.DemVotes === 'string' ? parseInt(e.DemVotes.replace(",", "")) : e.DemVotes;
+    });
     demVoteSum = demVotesArray.reduce(function(total,amount){
-
         return total + amount;
-      });
-    repVotesArray = data.map((e) => {return e['RepVotes'];});
+    }, 0);
+    repVotesArray = data.map((e) => {
+      return typeof e.RepVotes === 'string' ? parseInt(e.RepVotes.replace(",", "")) : e.RepVotes;
+    });
     repVoteSum = repVotesArray.reduce(function(total,amount){
-
         return total + amount;
-      });
-  if(democratWinState==1)
+    }, 0);
+
+for(var i=0; i<demVotePercentage.length; i++)
+{
+  if(demVotesArray[i]>repVotesArray[i])
+  {
+    demDistrictCount = demDistrictCount+1;
+  }
+  else if(demVotesArray[i] < repVotesArray[i])
+  {
+    repDistrictCount = repDistrictCount+1;
+  }
+}
+  if(demDistrictCount>repDistrictCount)
+  {
+    democratWonState=1;
+  }
+  else if(demDistrictCount < repDistrictCount){
+    republicanWonState=1;
+  }
+
+  if(democratWonState==1)
   {
     usedToWinDemVotes = demVoteSum / 2;
     wastedDemVotes = demVoteSum - usedToWinDemVotes;
     usedToWinRepVotes = repVoteSum;
     wastedRepVotes = repVoteSum;
   }
-  if(republicanWinState==1)
+  if(republicanWonState==1)
   {
     usedToWinRepVotes = repVoteSum / 2;
     wastedRepVotes = repVoteSum - usedToWinRepVotes;
@@ -123,19 +128,24 @@ d3.json("/resources/js/test.json", function(data) {
     wastedDemVotes = demVoteSum;
   }
 
+/*
+  put array in the following format through transpose method:
+  [
+    [usedToWinDemVotes, usedToWinRepVotes], <-- series 1
+    [wastedDemVotes, wastedRepVotes] <-- series 2
+  ]
+*/
   var voteCounts = [
     [usedToWinDemVotes, wastedDemVotes],
     [usedToWinRepVotes, wastedRepVotes]
   ];
-
-var transposedData = d3.transpose(voteCounts);
  
  //x0.domain(data.map(function(d) { return d.['Winner']; }));
   //x1.domain(keys).rangeRound([0, x0.bandwidth()]);
   //y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
 
    var y = d3.scale.linear()
-      .domain([0, 300000]) 
+      .domain([0, Math.max(usedToWinDemVotes, usedToWinRepVotes, wastedDemVotes, wastedRepVotes)]) 
       .range([0, h]);
      
 
@@ -146,25 +156,36 @@ var transposedData = d3.transpose(voteCounts);
       .append("svg:svg")
       .attr("width", outerW)
       .attr("height", outerH);
+  /* 
 
-  // Series selection
-  // We place each series into its own SVG group element. In other words,
-  // each SVG group element contains one series (i.e. bars of the same colour).
-  // It might be helpful to think of each SVG group element as containing one bar chart.
+     Series selection
+     We place each series into its own SVG group element. In other words,
+     each SVG group element contains one series (i.e. bars of the same colour).
+     It might be helpful to think of each SVG group element as containing one bar chart.
+  
+  [
+    [usedToWinDemVotes, usedToWinRepVotes], <-- series 1
+    [wastedDemVotes, wastedRepVotes] <-- series 2
+  ]
+*/
   var series = vis.selectAll("g.series")
       //.data(data)
-      .data(transposedData)
+      .data(voteCounts)
     .enter().append("svg:g")
       .attr("class", "series") // Not strictly necessary, but helpful when inspecting the DOM
-      .attr("fill", function (d, i) { return c[i]; })
+      .attr("fill", function (d, i) {
+        return c[i];
+      })
       .attr("transform", function (d, i) { return "translate(" + x1(i) + ")"; });
 
   // Groups selection
   var groups = series.selectAll("rect")
-      .data(Object) // The second dimension in the two-dimensional data array
+      .data(function(d) {return d;}) // The second dimension in the two-dimensional data array
       .enter().append("svg:rect")
-        .attr("x", 0)
-        .attr("y", function (d) { return h - y(d); })
+        .attr("x", 20)
+        .attr("y", function (d) {
+            return h-y(d);
+        })
         .attr("width", x1.rangeBand())
         .attr("height", y)
         .attr("transform", function (d, i) { return "translate(" + x0(i) + ")"; });
