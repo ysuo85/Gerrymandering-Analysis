@@ -69,7 +69,7 @@ var wastedRepVotes;
 var demDistrictCount=0;
 var repDistrictCount=0;
 
-d3.json("./test.json", function(error, data) {
+d3.json("/resources/test.json", function(error, data) {
   if (error) throw error;
   data = data.filter(function(row) {
 
@@ -77,24 +77,23 @@ d3.json("./test.json", function(error, data) {
       
   });
 
- /* calculate the winner of the state*/
-demVotePercentage = data.map((e) => {return e['Dem Vote %'];}); 
+  /* calculate the winner of the state*/
+  demVotePercentage = data.map((e) => {return e['Dem Vote %'];}); 
    
-for(var i=0; i<demVotePercentage.length(); i++)
-{
-  if(demVotePercentage[i]>=0.5)
+  for(var i=0; i<demVotePercentage.length(); i++)
   {
-    demDistrictCount = demDistrictCount+1;
+    if(demVotePercentage[i]>=0.5)
+    {
+      demDistrictCount = demDistrictCount+1;
+    }
+    else
+    {
+      repDistrictCount = repDistrictCount+1;
+    }
   }
-  else
-  {
-    repDistrictCount = repDistrictCount+1;
-  }
-}
   if(demDistrictCount>=(demVotePercentage.length()/2))
   {
     democratWinState=1;
-       
   }
   else{
     republicanWinState=1;
@@ -164,10 +163,11 @@ var transposedData = d3.transpose(voteCounts);
   // Groups selection
   var groups = series.selectAll("rect")
       .data(Object) // The second dimension in the two-dimensional data array
-    .enter().append("svg:rect")
+      .enter().append("svg:rect")
         .attr("x", 0)
         .attr("y", function (d) { return h - y(d); })
         .attr("width", x1.rangeBand())
         .attr("height", y)
         .attr("transform", function (d, i) { return "translate(" + x0(i) + ")"; });
+  });
 }
