@@ -25,10 +25,15 @@ for line in input:
         name        = name.replace("</SimpleData>\n", '')
         outputLine += name + ','
 
+    elif "<SimpleData name=\"ALAND\">" in line:
+        area = line.replace("<SimpleData name=\"ALAND\">", '')
+        area = area.replace("</SimpleData>\n", '')
+        outputLine += area + ','
+
     elif "<coordinates>" in line:
         cord        = line.replace("<coordinates>", '')
         cord        = cord.replace("</coordinates>\n", '')
-        outputLine += '['+cord+']' + ','
+        outputLine += '('+cord+')' + ','
 
 
 input.close()

@@ -16,17 +16,17 @@ for line in input:
 
         stateFp     = line.replace("<SimpleData name=\"STATEFP\">", '')
         stateFp     = stateFp.replace("</SimpleData>\n", '')
-        outputLine  = stateFp + ','
+        outputLine  = stateFp + ';'
 
     elif "<SimpleData name=\"NAME\">" in line:
         name        = line.replace("<SimpleData name=\"NAME\">", '')
         name        = name.replace("</SimpleData>\n", '')
-        outputLine += name + ','
+        outputLine += name + ';'
 
     elif "<coordinates>" in line:
         cord        = line.replace("<coordinates>", '')
         cord        = cord.replace("</coordinates>\n", '')
-        outputLine += '[' + cord + ']' + ','
+        outputLine += '(' + cord + ')' + ';'
 
 
 input.close()
