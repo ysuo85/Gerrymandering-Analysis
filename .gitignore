@@ -42,3 +42,5 @@ build/
 # Mac files
 .DS_Store
 .original
+# Eclipse project file
+.project
