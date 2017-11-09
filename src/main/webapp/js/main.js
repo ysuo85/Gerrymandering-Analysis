@@ -69,8 +69,7 @@ var wastedRepVotes;
 var demDistrictCount=0;
 var repDistrictCount=0;
 
-d3.json("/resources/test.json", function(error, data) {
-  if (error) throw error;
+d3.json("/resources/js/test.json", function(data) {
   data = data.filter(function(row) {
 
         return row['State'] == filters[0][1] && row['raceYear']==filters[1][1];
@@ -80,7 +79,7 @@ d3.json("/resources/test.json", function(error, data) {
   /* calculate the winner of the state*/
   demVotePercentage = data.map((e) => {return e['Dem Vote %'];}); 
    
-  for(var i=0; i<demVotePercentage.length(); i++)
+  for(var i=0; i<demVotePercentage.length; i++)
   {
     if(demVotePercentage[i]>=0.5)
     {
@@ -91,7 +90,7 @@ d3.json("/resources/test.json", function(error, data) {
       repDistrictCount = repDistrictCount+1;
     }
   }
-  if(demDistrictCount>=(demVotePercentage.length()/2))
+  if(demDistrictCount>=(demVotePercentage.length/2))
   {
     democratWinState=1;
   }
