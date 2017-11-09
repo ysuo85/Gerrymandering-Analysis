@@ -3,9 +3,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://d3js.org/d3-path.v1.min.js"></script>
+    <script src="https://d3js.org/d3-shape.v1.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
     <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
-  </head><body>
+<!--
+<style>
+
+svg,
+canvas {
+  position: absolute;
+}
+
+</style>
+-->
+<style>
+body {
+  font: 11px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+.tooltip {
+  position: absolute;
+  width: 200px;
+  height: 28px;
+  pointer-events: none;
+}
+</style>
+
+  </head>
+  <body>
     <div class="section">
       <div class="container">
         <div class="row">
@@ -92,56 +130,36 @@
           <div class="row">
             <div class="col-md-6">
               <br>
-              <iframe style="width: 100%; height:400px" src="/www/searchbox.html"></iframe>
+              
+              <iframe style="width: 100%; height:400px" src="/www/searchbox.html"></iframe> 
+               
+               
             </div>
             <div class="col-md-6">
-              <h1 class="text-primary"></h1>
-              <div class="btn-group btn-group-lg">
-                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">&nbsp; &nbsp; North Carolina &nbsp; &nbsp;&nbsp;<span class="fa fa-caret-down">&nbsp;</span></a>
-                <ul class="dropdown-menu" role="menu">
-                  <li>
-                    <a href="#">New York</a>
-                  </li>
-                  <li>
-                    <a href="#">North Carolina</a>
-                  </li>
-                  <li>
-                    <a href="#">Virginia</a>
-                  </li>
-                </ul>
-              </div>
-              <div class="btn-group btn-group-lg">
-                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">&nbsp; &nbsp; &nbsp;2016 &nbsp; &nbsp;<span class="fa fa-caret-down"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                  <li>
-                    <a href="#">2015</a>
-                  </li>
-                  <li>
-                    <a href="#">2014</a>
-                  </li>
-                  <li>
-                    <a href="#">2013</a>
-                  </li>
-                  <li>
-                    <a href="#">2012</a>
-                  </li>
-                  <li>
-                    <a href="#">2011</a>
-                  </li>
-                  <li>
-                    <a href="#">2010</a>
-                  </li>
-                  <li>
-                    <a href="#">2009</a>
-                  </li>
-                  <li>
-                    <a href="#">2008</a>
-                  </li>
-                </ul>
-              </div>
-              <a class="btn btn-lg btn-primary" href="./whatif.html">Make Super Districts&nbsp;</a>
-              <h3>State Chosen for 2016: North Carolina &nbsp;</h3>
-              <p>North Carolina, one of the original 13 colonies, entered the Union in
+              <select id="box1" onChange="myFunction(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
+              <option value="98">New York</option>
+              <option value="7122">North Carolina</option>
+              <option value="142">Virginia</option>
+              </select>
+              <select id="box2" onChange="myNewFunction(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
+              <option value="98">2016</option>
+              <option value="142">2014</option>
+              <option value="142">2012</option>
+              <option value="142">2010</option>
+              <option value="142">2008</option>
+              <option value="142">2006</option>
+              <option value="142">2004</option>
+              <option value="142">2002</option>
+              <option value="142">2000</option>
+              </select>
+              <a class="btn btn-primary dropdown-toggle" href="./basic user redistricting.html">Make Super Districts&nbsp;</a>
+              <div id="selection"></div>
+              
+               
+              
+              <p>
+                <br/>
+                North Carolina, one of the original 13 colonies, entered the Union in
                 November 1789. The state did not participate in the 1864 election due to
                 secession. Like many other southern states, North Carolina voted almost
                 exclusively Democratic from 1876 through 1964 and almost exclusively Republican
@@ -178,7 +196,7 @@
               <h1>Three Test Simulation</h1>
             </div>
             <div class="col-md-1">
-              <a href="./basic efficiency gap test result.html"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>
+              <a href="./efficiency_gap.html"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>
             </div>
             <div class="col-md-5">
               <h1>Efficiency Gap Simulation</h1>
@@ -204,8 +222,198 @@
             </p>
             <a class="btn btn-lg btn-primary" href="./learn_tests.html">Read More</a>
           </div>
-          <div class="col-md-6">
-            <img src="/resources/img/lopsided3.png" class="img-responsive">
+          <div class="col-md-6" style="width: 500px; height:400px">
+            
+<!--
+<script> 
+
+/* secure selections from user as a variable for the tests in display state use case */
+
+              var selectedState;
+              var selectedYear;
+              var selectedPair;
+
+              function myFunction(element) {
+                 selectedState = element.options[element.selectedIndex].text;
+              }
+              function myNewFunction(element) {
+                 selectedYear = element.options[element.selectedIndex].text;
+                 selectedPair=[
+                 ["State",selectedState],
+                 ["raceYear",selectedYear]
+                 ];
+                 document.getElementById("selection").innerHTML = "State Chosen for "+selectedPair[1][1]+" : "+selectedPair[0][1];
+                 
+              }
+
+/* end of securing selections*/
+
+
+/* creation of lopsided wins scatter plot*/
+
+
+var margin = {top: 20, right: 20, bottom: 30, left: 90},
+    width = 550 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+/* 
+ * value accessor - returns the value to encode for a given data object.
+ * scale - maps value to a visual display encoding, such as a pixel position.
+ * map function - maps from data value to display value
+ * axis - sets up axis
+ */ 
+
+// setup x 
+var xValue = function(d) { return d["Dem Vote %"];}, // data -> value
+    xScale = d3.scale.linear().range([0, width]), // value -> display
+    xMap = function(d) { return xScale(xValue(d));}, // data -> display
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+// setup y
+var yValue = function(d) { return Number.parseInt(d["DemVotes"].replace(",","")); }, // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = function(d) { return yScale(yValue(d));}, // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+//set up values for Republican Won districts
+var republicanValues = function(d) { 
+  return Number.parseInt(d["RepVotes"].replace(",",""));
+   }
+
+// setup fill color
+var cValue = function(d) { return d.Winner;},
+    color = d3.scale.category10();
+
+// add the graph canvas to the body of the webpage
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// add the tooltip area to the webpage
+var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+//data chosen by user for display state use case 
+
+  var filters = [
+    ['State', 'New York'],
+    ['raceYear', '2012']
+  ];
+ 
+   var counter;
+   var demVotePercentage;
+  d3.json("/resources/js/test.json", function(error, data) {
+  if (error) throw error;
+  data = data.filter(function(row) {
+
+        return row['State'] == filters[0][1] && row['raceYear']==filters[1][1];
+      
+    });
+  demVotePercentage = data.map((e) => {return e['Dem Vote %'];});
+
+  console.log("data.length: " + data.length);
+
+
+  // don't want dots overlapping axis, so add in buffer to data domain
+  console.log("data.length: " + data.length);
+  console.log(data);
+  console.log(data.map(function(d) { return Number.parseInt(d["DemVotes"].replace(",","")); } ));
+  xScale.domain([0, d3.max(data, xValue)+0.2]);
+  console.log("Max yValue: " + d3.max(data, function(d) { return Number.parseInt(d["DemVotes"].replace(",","")); } ));
+  console.log("yValue: " + yValue);
+  yScale.domain([0, d3.max(data, yValue )]);
+
+  // x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Democrat Vote Percentage");
+
+  // y-axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Vote Shares");
+
+  // draw dots
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("fill", function(d) { return color(cValue(d));}) 
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9);
+          if(d.Winner=="D")
+          {
+            tooltip.html("District:"+d["AreaNumber"] + "<br/>Dem Vote %:" + xValue(d) 
+          + "<br/> Dem Votes: " + yValue(d) )
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+          }else if(d.Winner=="R"){
+            tooltip.html("District:"+d["AreaNumber"] + "<br/> Dem Vote %:" + xValue(d) 
+          + "<br/> Rep Votes: " + republicanValues(d) )
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+          }
+          
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);
+      });
+
+  // draw legend
+  var legend = svg.selectAll(".legend")
+      .data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // draw legend colored rectangles
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  // draw legend text
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d;})
+
+    
+});
+
+
+
+</script>
+-->
+
+            
           </div>
         </div>
       </div>
@@ -213,8 +421,319 @@
     <div class="section">
       <div class="container">
         <div class="row">
-          <div class="col-md-6">
-            <img src="/resources/img/consistent_advantage.png" class="img-responsive">
+          <div class="col-md-6" style="width: 500px; height:400px">
+        
+    <!-- scatter zoom plot code -->  
+<svg width="500" height="400"></svg>
+<canvas width="500" height="400"></canvas>
+
+<script>
+var margin = {top: 20, right: 20, bottom: 30, left: 90},
+    width = 500 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+/* 
+ * value accessor - returns the value to encode for a given data object.
+ * scale - maps value to a visual display encoding, such as a pixel position.
+ * map function - maps from data value to display value
+ * axis - sets up axis
+ /*
+   demVotesArray = data.map((e) => {
+      return typeof e.DemVotes === 'string' ? parseInt(e.DemVotes.replace(",", "")) : e.DemVotes;
+    });
+  
+ */ 
+
+// setup x 
+var xValue = function(d) {
+    return d["Dem Vote %"];
+    }, // data -> value
+    xScale = d3.scale.linear().range([0, width]), // value -> display
+    xMap = function(d) { return xScale(xValue(d));}, // data -> display
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+// setup y
+var yValue = function(e) {
+      return typeof e.DemVotes === 'string' ? parseInt(e.DemVotes.replace(",", "")) : e.DemVotes; 
+     }, // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = function(d) { return yScale(yValue(d));}, // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+//set up values for Republican Won districts
+var republicanValues = function(d) { 
+  return Number.parseInt(d["RepVotes"].replace(",",""));
+   }
+
+// setup fill color
+  var c = [ "#E41A1C", "#377EB8"];
+
+
+
+
+// add the graph canvas to the body of the webpage
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// add the tooltip area to the webpage
+var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+ 
+  var filters = [
+    ['State', 'Alabama'],
+    ['raceYear', '2012']
+  ];
+  
+  var mean;
+  var median;
+  var sum;
+  var counter;
+  var demVotePercentage;
+  var democratWonState=0;
+  var republicanWonState=0; 
+  var demVotesArray;
+  var repVotesArray;
+  var usedToWinDemVotes;
+  var wastedDemVotes;
+  var usedToWinRepVotes;
+  var wastedRepVotes;
+  var demDistrictCount=0;
+  var repDistrictCount=0;
+
+  d3.json("/resources/js/test.json", function(error, data) {
+  if (error) throw error;
+  data = data.filter(function(row) {
+
+        return row['State'] == filters[0][1] && row['raceYear']==filters[1][1];
+      
+    });
+  demVotePercentage = data.map((e) => {
+    return e['Dem Vote %'];
+  });
+
+//calculate mean and median for watermarks on graph
+   sum = demVotePercentage.reduce(function(total,amount){
+
+        return total + amount;
+      });
+
+    mean = sum/ demVotePercentage.length;
+     demVotePercentage.sort();
+     if(demVotePercentage.length%2==0)
+     {
+        var elementA = (demVotePercentage.length/2)-1 ; 
+        var elementB = elementA+1;
+        var elementSum=demVotePercentage[elementA] + demVotePercentage[elementB];
+        median = elementSum/2;
+     }
+     else{
+        var element = parseInt(demVotePercentage.length/2) ; 
+
+        median = demVotePercentage[element];
+
+     } 
+  
+  
+  console.log("data.length: " + data.length);
+
+  // don't want dots overlapping axis, so add in buffer to data domain
+  console.log("data.length: " + data.length);
+  console.log(data);
+  
+
+  /*
+  console.log(
+    data.map(function(d) {
+     return Number.parseInt(d["DemVotes"].replace(",",""));
+    })
+    );
+*/
+  xScale.domain([0, d3.max(data, xValue)+0.2]);
+/*
+  console.log("Max yValue: " + d3.max(data, function(d) {
+      return Number.parseInt(d["DemVotes"].replace(",",""));
+    })
+  );
+  console.log("yValue: " + yValue);
+*/
+  yScale.domain([0, d3.max(data, yValue )]);
+
+  // x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Vote Percentage");
+
+  // y-axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Vote Shares");
+
+  /* calculate total democratic votes and republican votes in the state for each party to find the overall winner of the state*/
+    demVotesArray = data.map((e) => {
+      return typeof e.DemVotes === 'string' ? parseInt(e.DemVotes.replace(",", "")) : e.DemVotes;
+    });
+    
+    repVotesArray = data.map((e) => {
+      return typeof e.RepVotes === 'string' ? parseInt(e.RepVotes.replace(",", "")) : e.RepVotes;
+    });
+    
+
+for(var i=0; i<demVotePercentage.length; i++)
+{
+  if(demVotesArray[i]>repVotesArray[i])
+  {
+    demDistrictCount = demDistrictCount+1;
+  }
+  else if(demVotesArray[i] < repVotesArray[i])
+  {
+    repDistrictCount = repDistrictCount+1;
+  }
+}
+  if(demDistrictCount>repDistrictCount)
+  {
+    democratWonState=1;
+  }
+  else if(demDistrictCount < repDistrictCount)
+  {
+    republicanWonState=1;
+  }
+
+  if(democratWonState==1)
+  {
+    // draw dots
+  svg.selectAll(".dot")
+      .data(data)
+      .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("fill", function(d) { 
+        return c[1];
+      }) 
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9);
+          tooltip.html(d["AreaNumber"] + "<br/> (" + xValue(d) 
+          + ", " + yValue(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);
+      });
+
+  // draw legend
+  /*
+  var legend = svg.selectAll(".legend")
+    .data(c[1])//.data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 30 + ")"; });
+*/
+  // draw legend colored rectangles
+  /*
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", c[1]);
+*/
+  // draw legend text
+/*
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d;}) 
+  */
+
+  }
+
+  if(republicanWonState==1)
+  {
+     // draw dots
+  svg.selectAll(".dot")
+      .data(data)
+      .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("fill", function(d) { 
+        return c[0];
+      }) 
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9);
+          tooltip.html("District:"+d["AreaNumber"] + "<br/> Dem Vote %:" + xValue(d) 
+          + "<br/> Rep Votes: " + republicanValues(d) )
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);
+      });
+
+  // draw legend
+  /*
+  var legend = svg.selectAll(".legend")
+      .data(c[0])//.data(color.domain())
+      .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 30 + ")"; });
+*/
+
+  // draw legend colored rectangles
+  /*
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", c[0]);
+  */
+
+  // draw legend text
+  /*
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d;})
+    */
+  }
+ 
+});
+
+</script>
+
           </div>
           <div class="col-md-6">
             <h1 class="text-primary">Consistent Advantage</h1>

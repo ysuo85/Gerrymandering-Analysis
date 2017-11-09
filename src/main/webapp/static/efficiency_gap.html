@@ -1,0 +1,337 @@
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.min.js"></script>
+     <script src="http://d3js.org/d3.v2.js"></script>
+     <script src="http://d3js.org/d3.v4.min.js"></script>
+     <script src="https://d3js.org/d3-axis.v1.min.js"></script>
+
+
+    <script type="text/javascript" src="/resources/js/main.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        main();
+      });
+    </script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/resources/style/efficiency_gap.css" rel="stylesheet" type="text/css">
+  </head><body>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="nav nav-tabs">
+              <li class="">
+                <a href="./start page.html">Home</a>
+              </li>
+              <li class="active">
+                <a href="./efficiency_gap.html"><i class="fa fa-fw fa-angle-double-right"></i>Analyze a State</a>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Learn More&nbsp;<i class="fa fa-caret-down"></i></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="./learn more home page.html">Home Page</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="./Learn more_how tests work.html">How Tests Work</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="./learn more_legal efforts.html">Legal Efforts </a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="./Contact.html">Contact</a>
+              </li>
+              <li>
+                <a href="./basic user redistricting.html">What If?</a>
+              </li>
+            </ul>
+            <a href="#"><i class="fa fa-fw fa-lg fa-toggle-off"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="carousel-example" data-interval="false" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+        <div class="item active">
+          <img src="https://ununsplash.imgix.net/photo-1413912623716-e6c688db0383?w=1024&amp;q=50&amp;fm=jpg&amp;s=2777ec88322e8725978f0fa956735021">
+          <div class="carousel-caption">
+            <h2>Gerrymandering in the United States</h2>
+          </div>
+        </div>
+      </div>
+      <a class="left carousel-control" href="#carousel-example" data-slide="prev"><i class="icon-prev  fa fa-angle-left"></i></a>
+      <a class="right carousel-control" href="#carousel-example" data-slide="next"><i class="icon-next fa fa-angle-right"></i></a>
+    </div>
+    <div class="section">
+      <div class="section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <br>
+              <iframe style="width: 100%; height:400px" src="searchbox.html"></iframe>
+            </div>
+            <div class="col-md-6">
+              <select id="box1" onChange="myFunction(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
+              <option value="98">New York</option>
+              <option value="7122">North Carolina</option>
+              <option value="142">Virginia</option>
+              </select>
+              <select id="box2" onChange="myNewFunction(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
+              <option value="98">2016</option>
+              <option value="142">2014</option>
+              <option value="142">2012</option>
+              <option value="142">2010</option>
+              <option value="142">2008</option>
+              <option value="142">2006</option>
+              <option value="142">2004</option>
+              <option value="142">2002</option>
+              <option value="142">2000</option>
+              </select>
+              <a class="btn btn-primary dropdown-toggle" href="whatif.html">Make Super Districts&nbsp;</a>
+              <div id="selection"></div>
+              <script>
+
+/* secure selections from user as a variable for the tests in display state use case */
+
+              var selectedState;
+              var selectedYear;
+              var selectedPair;
+
+              function myFunction(element) {
+                 selectedState = element.options[element.selectedIndex].text;
+              }
+              function myNewFunction(element) {
+                 selectedYear = element.options[element.selectedIndex].text;
+                 selectedPair=[
+                 ["State",selectedState],
+                 ["raceYear",selectedYear]
+                 ];
+                 document.getElementById("selection").innerHTML = "State Chosen for "+selectedPair[1][1]+" : "+selectedPair[0][1];
+                 
+              }
+
+/* end of securing selections*/
+              </script>
+              <p>North Carolina, one of the original 13 colonies, entered the Union in
+                November 1789. The state did not participate in the 1864 election due to
+                secession. Like many other southern states, North Carolina voted almost
+                exclusively Democratic from 1876 through 1964 and almost exclusively Republican
+                beginning in 1968. The initial shift was largely in response to white conservative
+                voter uneasiness with the civil rights legislation passed in the mid-1960s,
+                which was effectively exploited by the Republicans “southern strategy.”
+                <br>
+                <br>In 2008, Barack Obama reversed the trend of Republican dominance here
+                (although just barely), defeating John McCain by about 14,000 votes out
+                of 4.3 million cast (49.7% to 49.4%). In percentage terms, it was the 2nd
+                closest race of the 2008 election (behind Missouri). In 2012, North Carolina
+                was again the 2nd closest race (this time behind Florida) as the state
+                flipped Republican. Mitt Romney beat Obama by about 2%. Donald Trump won
+                the state by 3.6% over Hillary Clinton in 2016. Based on population projections,
+                the state may gain an additional electoral vote after the 2020 presidential
+                election.
+                <br>
+              </p>
+              <a class="btn btn-primary btn-sm" contenteditable="true" style="margin-right:10px">&nbsp; &nbsp; &nbsp; Read &nbsp;More &nbsp; &nbsp;</a>
+              <a class="btn btn-primary btn-sm" style="margin-right:10px">&nbsp; &nbsp;Run Analysis- Congressional District&nbsp;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-1">
+              <a href="analyze.html"><i class="fa fa-5x fa-fw fa-toggle-off"></i></a>
+            </div>
+            <div class="col-md-5">
+              <h1>Three Test Simulation</h1>
+            </div>
+            <div class="col-md-1">
+              <a href="./efficiency_gap.html"><i class="fa fa-5x fa-fw fa-toggle-on"></i></a>
+            </div>
+            <div class="col-md-5">
+              <h1>Efficiency Gap Simulation</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="text-primary">&nbsp; &nbsp; &nbsp;Calculated Votes for both the Democrat Party and Republican
+              Party</h1>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>District</th>
+                  <th>D Votes</th>
+                  <th>R Votes</th>
+                  <th>D Wasted Votes</th>
+                  <th>R Wasted Votes</th>
+                  <th>Net Wasted Votes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>75</td>
+                  <td>25</td>
+                  <td>24</td>
+                  <td>25</td>
+                  <td>1 R</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>60</td>
+                  <td>40</td>
+                  <td>9</td>
+                  <td>40</td>
+                  <td>31 R</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>43</td>
+                  <td>57</td>
+                  <td>43</td>
+                  <td>6</td>
+                  <td>37 D</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          
+          <div class = "col-md-6" id="vis"></div>
+          <div class="col-md-6">
+            <h1 class="text-primary">Did your state make the standard?</h1>
+            <h1 class="text-success">PASS</h1>
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+              ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis
+              dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
+              nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+              Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In
+              enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum
+              felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus
+              elementum semper nisi.
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+            </p>
+            <a class="btn btn-primary" href="./Learn more_how tests work.html">Read More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h1 class="text-primary">Two-Party Seat Margin</h1>
+            <h3></h3>
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+              ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis
+              dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
+              nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+              Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In
+              enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum
+              felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus
+              elementum semper nisi.
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+            </p>
+            <a class="btn btn-primary" href="./Learn more_how tests work.html">Read More</a>
+          </div>
+          <div class = "col-md-6" id="vis"></div>
+          <!--<div class="col-md-6">
+              <br>
+              <iframe style="width: 100%; height:400px" src="dual bar chart.html"></iframe>
+            </div>-->
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+        <div class = "col-md-6" id="vis"></div>
+          <!--<div class="col-md-6">
+              <br>
+              <iframe style="width: 100%; height:400px" src="dual bar chart.html"></iframe>
+            </div>-->
+          <div class="col-md-6">
+            <h1 class="text-primary">Two-Party Vote Margin</h1>
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+              ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis
+              dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
+              nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+              Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In
+              enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum
+              felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus
+              elementum semper nisi.
+              <br>
+            </p>
+            <a class="btn btn-primary" href="./Learn more_how tests work.html">Read More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="section section-primary">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <h1>Gerrymandering of the U.S.</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisici elit,
+              <br>sed eiusmod tempor incidunt ut labore et dolore magna aliqua.
+              <br>Ut enim ad minim veniam, quis nostrud</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="text-info text-right">
+              <br>
+              <br>
+            </p>
+            <div class="row">
+              <div class="col-md-12 hidden-lg hidden-md hidden-sm text-left">
+                <a href="#"><i class="fa fa-3x fa-fw fa-instagram text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-github text-inverse"></i></a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 hidden-xs text-right">
+                <a href="#"><i class="fa fa-3x fa-fw fa-instagram text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>
+                <a href="#"><i class="fa fa-3x fa-fw fa-github text-inverse"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  
+
+</body></html>
