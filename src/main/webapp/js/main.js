@@ -5,11 +5,12 @@ function main() {
   // version you see here.
 
   // First, we define sizes and colours...
-  var outerW = 640; // outer width
-  var outerH = 480; // outer height
+  var outerW = 540; // outer width
+  var outerH = 400; // outer height
   var padding = { t: 0, r: 0, b: 0, l: 0 };
   var w = outerW - padding.l - padding.r; // inner width
   var h = outerH - padding.t - padding.b; // inner height
+  var margin = {top: 20, right: 20, bottom: 30, left: 40};
   var c = [ "#E41A1C", "#377EB8"];//, "#4DAF4A" ]; // ColorBrewer Set 1
 
   // Second, we define our data...
@@ -51,6 +52,11 @@ function main() {
       .range([0, h]);
       */
 
+  //x0.domain(data.map(function(d) { return d.['Winner']; }));
+  //x1.domain(keys).rangeRound([0, x0.bandwidth()]);
+  //y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
+
+  
 var demVotePercentage;
 var democratWonState=0;
 var republicanWonState=0;
@@ -69,6 +75,7 @@ var filters = [
   ['raceYear', '2012']
 ];
 
+/* creation of zoom tour scatter plot*/
 
 d3.json("/resources/js/test.json", function(data) {
   data = data.filter(function(row) {
@@ -140,16 +147,14 @@ for(var i=0; i<demVotePercentage.length; i++)
     [usedToWinRepVotes, wastedRepVotes]
   ];
  
- //x0.domain(data.map(function(d) { return d.['Winner']; }));
-  //x1.domain(keys).rangeRound([0, x0.bandwidth()]);
-  //y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
-
-   var y = d3.scale.linear()
-      .domain([0, Math.max(usedToWinDemVotes, usedToWinRepVotes, wastedDemVotes, wastedRepVotes)]) 
-      .range([0, h]);
-     
+ 
 
  // end added
+  var y = d3.scale.linear()
+      .domain([0, Math.max(usedToWinDemVotes, usedToWinRepVotes, wastedDemVotes, wastedRepVotes)]) 
+      .range([0, h]);
+    
+
 
   // Visualisation selection
   var vis = d3.select("#vis")
@@ -168,26 +173,37 @@ for(var i=0; i<demVotePercentage.length; i++)
     [wastedDemVotes, wastedRepVotes] <-- series 2
   ]
 */
+
+
   var series = vis.selectAll("g.series")
-      //.data(data)
       .data(voteCounts)
-    .enter().append("svg:g")
+      .enter().append("svg:g")
       .attr("class", "series") // Not strictly necessary, but helpful when inspecting the DOM
       .attr("fill", function (d, i) {
         return c[i];
       })
-      .attr("transform", function (d, i) { return "translate(" + x1(i) + ")"; });
+      .attr("transform", function (d, i) { 
+        return "translate(" + x1(i) + ")"; 
+      })
+
+      ;
 
   // Groups selection
   var groups = series.selectAll("rect")
       .data(function(d) {return d;}) // The second dimension in the two-dimensional data array
       .enter().append("svg:rect")
-        .attr("x", 20)
-        .attr("y", function (d) {
+      .attr("x", 20)
+      .attr("y", function (d) {
             return h-y(d);
-        })
-        .attr("width", x1.rangeBand())
-        .attr("height", y)
-        .attr("transform", function (d, i) { return "translate(" + x0(i) + ")"; });
+      })
+      .attr("width", x1.rangeBand())
+      .attr("height", y)
+      .attr("transform", function (d, i) {
+         return "translate(" + x0(i) + ")"; 
+      });
+
+   
+
   });
 }
+
