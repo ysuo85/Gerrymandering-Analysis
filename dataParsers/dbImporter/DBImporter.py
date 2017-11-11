@@ -6,30 +6,53 @@ from sqlalchemy.ext.automap import automap_base
 
 
 # To test in memory no DB conn required right now
-connection_string = "mysql+pymysql://johnsonlu:abc123@cse308.ch4xgfzmcq2l.us-east-1.rds.amazonaws.com:3306/gerrymandering"
-engine = create_engine(connection_string, echo=True)
-conn = engine.connect()
-metadata = MetaData()
-metadata.reflect(bind=engine)
-Base = automap_base()
-Base.prepare(engine, reflect=True)
+connection_string = ''
+engine = None
+conn = None
+metadata = None
+Base = None
 
-Boundaries = Base.classes.Boundaries
-States = Base.classes.States
-Districts = Base.classes.Districts
-Population = Base.classes.Population
+Boundaries = None
+States = None
+Districts = None
+Population = None
 
 
 stateFPs = {}
 
 def main():
 
+    connectToDB()
+
     # printTables()
     buildStateFPMap()
     #importStateData()
     #importStateBoundaryData()
-    importDistrictsAndVote('../parsedFiles/votingData.csv')
+    #importDistrictsAndVote('../parsedFiles/votingData.csv')
+    importPopulationData('../parsedFiles/VirginiaCensus.csv', "Virginia")
+    importPopulationData('../parsedFiles/NorthCarolinaCensus.csv', "North Carolina")
+    importPopulationData('../parsedFiles/nyCensus.csv', "New York")
 
+def connectToDB():
+    global conn
+    global Boundaries
+    global States
+    global Districts
+    global Population
+
+    conURL = open('../Connection', 'r')
+    connection_string = conURL.readline()
+    engine = create_engine(connection_string, echo=True)
+    conn = engine.connect()
+    metadata = MetaData()
+    metadata.reflect(bind=engine)
+    Base = automap_base()
+    Base.prepare(engine, reflect=True)
+
+    Boundaries = Base.classes.Boundaries
+    States = Base.classes.States
+    Districts = Base.classes.Districts
+    Population = Base.classes.Population
 
 def buildStateFPMap():
     stateData = open("../parsedFiles/StateGeo.csv", 'r')
@@ -151,29 +174,65 @@ def importDistrictsAndVote(path):
 
 
 
-def importPopulationData(year, sName, sFp, district):
+def importPopulationData(path, sName):
     # Population
     # `Id`
     # `Name` ENUM('Total', 'White', 'Black', 'Hispanic', 'Asian', 'PacificIslander', 'AmericanIndian', 'Other', 'Mixed')
     # `Population`
     # `DistrictId`
-    if year in range(2010, 2020):               # range of the census data we have
-        if sName == 'Virginia':
-            vaCensus = open('../parsedFiles/VirginiaCensus.csv', 'r')
-        elif sName == 'North Carolina':
-            ncCensus = open('../parsedFiles/NorthCarolinaCensus.csv', 'r')
-        elif sName == 'New York':
-            nyCensus = open('../parsedFiles/nyCensus.csv', 'r')
+    censusData = open(path, 'r')
+    races = ('Total', 'White', 'Black', 'Hispanic', 'Asian', 'PacificIslander', 'AmericanIndian', 'Other', 'Mixed')
 
-        ins = metadata.tables['Population'].insert().values(Name='', Population=-1, DistrictId=district)
-        result = conn.execute(ins)
+    race = ''
+    pop  = []
+    dId  = -1
 
+    for line in censusData:
+        line = line.split(',')
+        race = line[0]
+        pop  = line[1:]
 
+        if race == "Total population":
+            race = "Total"
+        elif race == "White":
+            race = "White"
+        elif race == "Asian":
+            race = "Asian"
+        elif race == "Black or African American":
+            race = "Black"
+        elif race == "American Indian and Alaska Native":
+            race = "AmericanIndian"
+        elif race == "Native Hawaiian and Other Pacific Islander":
+            race = "PacificIslander"
+        elif race == "Some other race":
+            race = "Other"
+        elif race == "Two or more races":
+            race = "Mixed"
+        elif race == "Hispanic or Latino (of any race)":
+            race = "Hispanic"
 
+        for year in range(2010, 2018):
+            dIds = []
+            # census data applies to the years 2010-2020, current year 2017
+            # find district with by district id, year, and name
+            s = "SELECT " \
+                + "gerrymandering.Districts.Id " \
+                + "FROM " \
+                + "gerrymandering.Districts, gerrymandering.States " \
+                + "WHERE " \
+                + "States.Year = " + str(
+                year) + " and States.StateName = \'" + sName + "\' and Districts.StateId = States.Id"
 
-def importVotingData(dId, party, vote):
-    ins = metadata.tables['Votes'].insert().values(DistrictId=dId, Party=party, voteCount=vote)
-    result = conn.execute(ins)
+            for row in conn.execute(s):
+                dIds.append(row[0])
+
+            if len(dIds) != 0:
+                for i in range(len(pop)):  # insert for the number of districts
+
+                    ins = metadata.tables['Population'].insert().values(Name=race, Population=int(pop[i]),
+                                                                        DistrictId=dIds[i])
+                    conn.execute(ins)
+
 
 
 def printTables():
