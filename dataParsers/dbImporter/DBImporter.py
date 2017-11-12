@@ -127,6 +127,7 @@ def importStateBoundaryData():
             # get pkId from last inserted for StateBoundary FK
             boundaryPKId.append(boundPKId)
 
+
         # import StateBoundaries
         for pkId in boundaryPKId:
             ins = metadata.tables['StateBoundaries'].insert().values(BoundaryId=pkId[0], StateId=sId)
@@ -169,7 +170,7 @@ def importDistrictBoundary(path, year):
                 + " gerrymandering.Districts, gerrymandering.States " \
                 + " WHERE " \
                 + " Districts.StateId = States.Id and " \
-                + " States.Year = " + str(year) + " and States.StateId = " + str(sId) + " and Districts.DistrictId = " + str(dId)
+                + " States.Year = " + str(yr) + " and States.StateId = " + str(sId) + " and Districts.DistrictId = " + str(dId)
 
             for row in conn.execute(s):
                 dFK = row[0]
