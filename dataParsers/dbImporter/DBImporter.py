@@ -29,13 +29,21 @@ def main():
     #importStateData()
     #importStateBoundaryData()
     #importDistrictsAndVote('../parsedFiles/votingData.csv')
-    importPopulationData('../parsedFiles/VirginiaCensus.csv', "Virginia")
-    importPopulationData('../parsedFiles/NorthCarolinaCensus.csv', "North Carolina")
-    importPopulationData('../parsedFiles/nyCensus.csv', "New York")
+
+    #importPopulationData('../parsedFiles/VirginiaCensus.csv', "Virginia")
+    #importPopulationData('../parsedFiles/NorthCarolinaCensus.csv', "North Carolina")
+    #importPopulationData('../parsedFiles/nyCensus.csv', "New York")
+
+    importDistrictBoundary("../parsedFiles/DistrictGeo_2016.csv", 2010)    # Redistricting follows census so this file
+                                                                        # applies for years 2010 - 2020
+
 
 def connectToDB():
     global conn
+    global engine
     global Boundaries
+    global metadata
+    global Base
     global States
     global Districts
     global Population
@@ -126,6 +134,61 @@ def importStateBoundaryData():
 
 
     stateData.close()
+    return
+
+
+def importDistrictBoundary(path, year):
+
+    geoData = open(path, 'r')
+
+    for line in geoData:
+        boundaryPKId = []
+
+        line     = line.split(';')
+        sId      = int(line[0])
+        dId      = int(line[1])
+        area     = int(line[2])
+        polygons = line[3:]
+
+        for polygon in polygons:
+            polygon = "PolygonFromText(\'POLYGON(" + polygon + ")\')"
+
+            ins = metadata.tables['Boundaries'].insert().values(Shape=text(polygon))
+            result = conn.execute(ins)
+            boundPKId = result.inserted_primary_key
+
+            # get pkId from last inserted for StateBoundary FK
+            boundaryPKId.append(boundPKId)
+        # import District Boundary
+        for yr in range(year, year+10):
+            dFK = -1
+            # find district by dId, year, sId
+            s = "SELECT "\
+                + " Districts.Id " \
+                + " FROM " \
+                + " gerrymandering.Districts, gerrymandering.States " \
+                + " WHERE " \
+                + " Districts.StateId = States.Id and " \
+                + " States.Year = " + str(year) + " and States.StateId = " + str(sId) + " and Districts.DistrictId = " + str(dId)
+
+            for row in conn.execute(s):
+                dFK = row[0]
+
+            if dFK != -1:
+                for pkId in boundaryPKId:
+                    ins = metadata.tables['DistrictBoundaries'].insert().values(BoundaryId=pkId[0], DistrictId=dFK)
+                    conn.execute(ins)
+
+                upd = " UPDATE "\
+                      + " gerrymandering.Districts SET Districts.Area  = " + str(area) \
+                      + " WHERE  Districts.Id = " + str(dFK)
+
+                conn.execute(upd)
+
+
+
+    geoData.close()
+    return
 
 def importDistrictsAndVote(path):
 
@@ -158,7 +221,7 @@ def importDistrictsAndVote(path):
 
 
         # get fk using sName
-        s = "SELECT Id FROM gerrymandering.States WHERE States.StateName = \'" + sName + "\' and States.Year = " + year
+        s = "SELECT States.Id FROM gerrymandering.States WHERE States.StateName = \'" + sName + "\' and States.Year = " + year
         for row in conn.execute(s):
             sFK = row[0]
 
@@ -171,6 +234,7 @@ def importDistrictsAndVote(path):
         conn.execute(ins)
         ins = metadata.tables['Votes'].insert().values(DistrictId=districtPK[0], Party="Democrat", voteCount=dVote)
         conn.execute(ins)
+    return
 
 
 
@@ -232,6 +296,7 @@ def importPopulationData(path, sName):
                     ins = metadata.tables['Population'].insert().values(Name=race, Population=int(pop[i]),
                                                                         DistrictId=dIds[i])
                     conn.execute(ins)
+    return
 
 
 
