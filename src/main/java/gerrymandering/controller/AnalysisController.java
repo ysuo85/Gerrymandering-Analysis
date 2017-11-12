@@ -1,12 +1,10 @@
 package gerrymandering.controller;
 
+import gerrymandering.model.GeoJson;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,9 +24,9 @@ public class AnalysisController {
 	 * @param stateName full name of state (e.g. "New York")
 	 * @return JSON (as String) containing state with district
 	**/
-	@RequestMapping("/loadState")
+	@RequestMapping(value = "/loadState", method = RequestMethod.GET)
 	@ResponseBody
-	public String loadState(@RequestParam(value="stateName", required=false, defaultValue="New York") String stateName) {
+	public GeoJson loadState(@RequestParam(value="stateName", required=false, defaultValue="New York") String stateName) {
 		String ret = "";
 		// TODO: switch on stateName to load correct resource (currently always loads New York)
 		try {
@@ -44,10 +42,16 @@ public class AnalysisController {
 			e.printStackTrace();
 		}
 
-		return ret;
+		return null;
 	}
 
-	@RequestMapping("/runMeasures")
+	@RequestMapping(value = "/loadDistrict", method = RequestMethod.GET)
+	@ResponseBody
+	public GeoJson loadDistrict(@RequestParam String stateName, @RequestParam String districtNo){
+		return null;
+	}
+
+	@RequestMapping(value = "/runMeasures", method = RequestMethod.POST)
 	@ResponseBody
 	public String runMeasures(@RequestParam(value="stateName", required=false, defaultValue="New York") String stateName) {
 		String ret = "";
