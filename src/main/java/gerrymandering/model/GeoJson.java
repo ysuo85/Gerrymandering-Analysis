@@ -1,14 +1,21 @@
 package gerrymandering.model;
 
+import gerrymandering.measure.MeasureResults;
+
+import java.util.Collection;
+
 public class GeoJson {
+	private Collection<BipartisanRegion> features;
+	private String json;
 
-	private final String stateName;
-
-	public GeoJson(String stateName) {
-		this.stateName = stateName;
+	public GeoJson() {
 	}
 
-	public String getStateName() {
-		return stateName;
+	public void addDistrict(District district){
+
+	}
+
+	public void addMeasureResults(MeasureResults results){
+
 	}
 }
