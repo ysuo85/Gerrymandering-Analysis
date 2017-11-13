@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class PageController {
+public class StaticPageController {
 
 	@RequestMapping("/greeting")
 	public String greeting(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
@@ -17,5 +17,15 @@ public class PageController {
 	@RequestMapping("/analyze")
 	public String analyze() {
 		return "basic user three test results";
+	}
+
+	@RequestMapping("/")
+	public String root() {
+		return "redirect:/www/index.html";
+	}
+
+	@RequestMapping("/www/")
+	public String staticBase() {
+		return "redirect:/www/index.html";
 	}
 }

@@ -3,7 +3,7 @@
 # Important data to retain; State, Year, District, RepVotes, DemoVotes
 
 input = open("US_House_elections_1972_to_2016_clean.csv", 'r')
-output = open("votingData.csv", 'w')
+output = open("parsedFiles/votingData.csv", 'w')
 
 COMMMA = ','
 NEWLINE = '\n'
@@ -11,13 +11,17 @@ NEWLINE = '\n'
 for line in input:
     line = line.split(",")
 
-    state    = line[0]
-    year     = line[1]
-    district = line[2]
-    repVotes = line[3]
-    demVotes = line[5]
+    state    = line[0].replace('"','')
+    year     = line[1].replace('"','')
+    district = line[2].replace('"','')
+    repVotes = line[3].replace('"','')
+    demVotes = line[5].replace('"','')
 
-    newLine = state + COMMMA + year + COMMMA + district + COMMMA + repVotes + COMMMA + demVotes + NEWLINE
+    try:
+        if int(year) > 1999:
+            newLine = state + COMMMA + year + COMMMA + district + COMMMA + repVotes + COMMMA + demVotes + NEWLINE
 
-    output.write(newLine)
+            output.write(newLine)
+    except:
+        pass
 
