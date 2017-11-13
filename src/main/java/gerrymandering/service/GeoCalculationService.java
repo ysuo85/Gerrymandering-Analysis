@@ -1,8 +1,8 @@
 package gerrymandering.service;
 
+import com.vividsolutions.jts.geom.Point;
 import gerrymandering.model.District;
 import gerrymandering.model.GeoRegion;
-import gerrymandering.model.LatLong;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by yisuo on 11/12/17.
  */
 public class GeoCalculationService {
-    public LatLong calculateCenter(GeoRegion region){
+    public Point calculateCenter(GeoRegion region){
         return null;
     }
 
@@ -22,7 +22,7 @@ public class GeoCalculationService {
         return 0.0;
     }
 
-    public Double distance(LatLong a, LatLong b){
+    public Double distance(Point a, Point b){
         return 0.0;
     }
 
