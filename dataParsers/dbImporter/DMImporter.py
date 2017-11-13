@@ -1,82 +1,129 @@
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-from sqlalchemy import Sequence
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import inspect
 
 # To test in memory no DB conn required right now
-engine = create_engine('sqlite:///:memory:', echo=True)
+connection_string = "mysql+pymysql://johnsonlu:abc123@cse308.ch4xgfzmcq2l.us-east-1.rds.amazonaws.com:3306/gerrymandering"
+engine = create_engine(connection_string, echo=True)
 conn = engine.connect()
 metadata = MetaData()
+metadata.reflect(bind=engine)
+
+StateBoundaries = []
+states = []
+districts = []
+DistrictBoundaries = []
+boundaries = []
+population = []
 
 
 def main():
 
-    # build tables
-    #
-    state = Table('state', metadata,
-                  Column('id', Integer, primary_key=True),
-                  Column('stateFp', String),
-                  Column('stateName', String),
-                  Column('polygon', String),
-                  Column('year', Integer),
-                  Column('clickCount', Integer)
-                  )
+    # print database tables
+    inspector = inspect(engine)
 
+    # printTables()
+    importData()
 
-    district = Table('district', metadata,
-                 Column('id', Integer, Sequence('user_id_seq'), primary_key=True),
-                 Column('stateId', String, ForeignKey('state.id')),
-                 Column('districtNum', String),
-                 Column('voteRep', Integer),
-                 Column('voteDem', Integer),
-                 Column('polygon', String),
-                 Column('area', Integer),
-                 Column('population', String),
-                 Column('clickCount', String)
-                 )
-
-    minority = Table('minority', metadata,
-                 Column('id', Integer, Sequence('user_id_seq'), primary_key=True),
-                 Column('districtNum', Integer, ForeignKey('district.id')),
-                 Column('name', String),
-                 Column('voteRep', Integer),
-                 Column('voteDem', Integer),
-                 Column('population', Integer)
-                 )
-
-    metadata.create_all(engine)
-
-    # print tables
-    #
-    print 'Tables: ' + str(metadata.tables.keys())
-
+def importData():
     # populate voting data
     #
-    input = open("parsedFiles/votingData.csv")
+    voteData  = open("../parsedFiles/votingData.csv", 'r')
+    stateData = open("../parsedFiles/StateGeo.csv", 'r')
 
-    for line in input:
+
+    for line in voteData:
         data = []
         line = line.split(',')
         for item in line:
             if '\n' in item:
-                data.append(item[:-2])
+                data.append(item[:-1])
             else:
                 data.append(item)
 
-        # fill state info
-        print "Data to fill: " + str(data)
-        ins = state.insert().values(stateName = data[0] , year = int(data[1]), clickCount = 0)
+        if len(data) == 5:
+            # import data into database
+            sId     = -1
+            polygons = []
+            sName   = data[0]
+            year    = data[1]
+            dId     = data[2]
+            rVote   = data[3]
+            dVote   = data[4]
+
+            for line in stateData:
+                line = line.split(';')
+                if line[1] == sName:
+                    sId = int(line[0])
+                    # get polygons
+                    for i in range(2,len(line)):
+                        polygon = "POLYGON(" + line[i] + ")"
+                        polygon = polygon[:-1]
+                        polygons.append(polygon)
+                    break
+
+            # import State Data
+            ins = metadata.tables['States'].insert().values(StateName = sName , Year = int(year), ClickCount = 0)
+            result = conn.execute(ins)
+            statePKId = result.inserted_primary_key
+
+            # import State Boundaries
+            boundaryPKId = []
+
+            # for polygon in polygons:
+            #     ins = metadata.tables['Boundaries'].insert().values(Shape=polygon)
+            #     result = conn.execute(ins)
+            #     boundaryPKId.append(result.inserted_primary_key)
+            #
+            # # import StateBoundaries
+            # for pkId in boundaryPKId:
+            #     ins = metadata.tables['StateBoundaries'].insert().values(BoundaryId = pkId, StateId = statePKId)
+            #     result = conn.execute(ins)
+
+            # import district Data
+            importPopulationData(year, sName, sId, dId)
+
+
+            # import votingData
+            importVotingData(dId, "Democrat", rVote)
+            importVotingData(dId, "Republican", rVote)
+
+    voteData.close()
+    stateData.close()
+
+
+def importPopulationData(year, sName, sFp, district):
+    # Population
+    # `Id`
+    # `Name` ENUM('Total', 'White', 'Black', 'Hispanic', 'Asian', 'PacificIslander', 'AmericanIndian', 'Other', 'Mixed')
+    # `Population`
+    # `DistrictId`
+    if year in range(2010, 2020):               # range of the census data we have
+        if sName == 'Virginia':
+            vaCensus = open('../parsedFiles/VirginiaCensus.csv', 'r')
+        elif sName == 'North Carolina':
+            ncCensus = open('../parsedFiles/NorthCarolinaCensus.csv', 'r')
+        elif sName == 'New York':
+            nyCensus = open('../parsedFiles/nyCensus.csv', 'r')
+
+        ins = metadata.tables['Population'].insert().values(Name='', Population=-1, DistrictId=district)
         result = conn.execute(ins)
-        # get state PK for FK in district
-        stateId = result.inserted_primary_key
-        # fill district info
-        ins = district.insert().values(stateId=stateId, districtNum = int(data[2]), voteRep= int(data[3]), voteDem= int(data[4]), clickCount = 0)
-        result = conn.execute()
-        districtId = result.inserted_primary_key
 
 
 
 
+def importVotingData(dId, party, vote):
+    ins = metadata.tables['Votes'].insert().values(DistrictId=dId, Party=party, voteCount=vote)
+    result = conn.execute(ins)
 
+
+def printTables():
+    for t in metadata.tables:
+        for x in engine.execute(metadata.tables[t].select()):
+            print(x)
+
+    return
 
 
 if __name__ == "__main__":
