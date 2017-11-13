@@ -20,6 +20,7 @@ public class State extends MultiDistrictRegion implements Serializable {
     @Column(name = "ClickCount")
 	private Integer clickCount;
 
+    @Transient
 	private List<SuperDistrict> superDistricts;
 
 	public State() {
