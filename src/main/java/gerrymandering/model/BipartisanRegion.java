@@ -3,14 +3,19 @@ package gerrymandering.model;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
 
-import java.time.Year;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
+import java.io.Serializable;
 import java.util.Map;
 
-public abstract class BipartisanRegion {
+@MappedSuperclass
+public abstract class BipartisanRegion extends GeoRegion implements Serializable {
+    @Transient
     private Votes votes;
-    private Year year;
+    @Transient
     private Party electedParty;
     private Integer area;
+    @Transient
     private Map<PopulationGroup, Integer> population;
 
 	public BipartisanRegion() {
@@ -19,4 +24,5 @@ public abstract class BipartisanRegion {
 	public Map<PopulationGroup, Double> getEthnicPercent(){
 	    return null;
     }
+
 }
