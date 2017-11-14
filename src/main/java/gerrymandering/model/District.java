@@ -1,12 +1,16 @@
 package gerrymandering.model;
 
 import com.vividsolutions.jts.geom.Polygon;
+import gerrymandering.common.CommonConstants;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by yisuo on 11/7/17.
@@ -29,13 +33,13 @@ public class District extends BipartisanRegion implements Serializable {
     private State state;
     @OneToMany(mappedBy = "district")
     @MapKeyEnumerated(EnumType.STRING)
-    private Map<Party, Votes> votes;
+    private Map<Party, Votes> votes = new HashMap<>();
     @ElementCollection
     @CollectionTable(name = "Population", joinColumns = @JoinColumn(name = "DistrictId"))
     @MapKeyEnumerated(EnumType.STRING)
     @MapKeyColumn(name = "Name")
     @Column(name = "Population")
-    private Map<PopulationGroup, Long> population;
+    private Map<PopulationGroup, Long> population = new HashMap<>();
     @JoinColumns({
             @JoinColumn(table = "DistrictBoundaries", name = "Id",
                         referencedColumnName = "DistrictId"),
@@ -44,74 +48,107 @@ public class District extends BipartisanRegion implements Serializable {
     @Column(name = "Shape")
     private Polygon shape;
 
-    public Party winningParty(){
-        return null;
-    }
-
-    public Party losingParty(){
-        return null;
-    }
-
-    public Integer getVotes(Party party){
-        return null;
-    }
-
-    public void addVotes(Party party, Integer votes){
-
-    }
-
     @Override
     public Polygon getShape() {
-        return null;
+        return shape;
     }
 
     @Override
     public Map<Party, Votes> getVotes() {
-        return null;
+        return votes;
+    }
+
+    @Override
+    public Long getTotalVotes() {
+        return votes
+                .values()
+                .stream()
+                .mapToLong(votes -> votes.getVoteCount())
+                .sum();
     }
 
     @Override
     public Map<Party, Double> getPercentVotes() {
-        return null;
+        Long totalVotes = getTotalVotes();
+
+        return votes
+                .entrySet()
+                .stream()
+                .collect(
+                    Collectors.toMap(
+                        p -> p.getKey(),
+                        p -> p.getValue().getVoteCount()
+                                / new Double(totalVotes)
+                                * CommonConstants.PERCENT
+                    )
+                );
     }
 
     @Override
     public Long getPartyVotes(Party party) {
-        return null;
+        return votes.get(party).getVoteCount();
     }
 
     @Override
     public Double getPartyPercent(Party party) {
-        return null;
+        return getPercentVotes().get(party);
     }
 
     @Override
     public Party getElectedParty() {
-        return null;
+        return Collections.max(
+                getVotes().entrySet(),
+                (a, b) ->
+                    a.getValue().getVoteCount() > b.getValue().getVoteCount() ? 1 : -1
+               ).getKey();
     }
 
     @Override
-    public Integer getTotalArea() {
-        return null;
+    public void addVotes(Map<Party, Votes> votes, Party party, Long numVotes) {
+        votes.get(party).addVotes(numVotes);
     }
 
     @Override
-    public Map<PopulationGroup, Long> getTotalPopulation() {
-        return null;
+    public Long getTotalArea() {
+        return area;
     }
 
     @Override
-    public Map<PopulationGroup, Double> getEthnicPercent() {
-        return null;
+    public Map<PopulationGroup, Long> getPopulationGroups() {
+        return population;
+    }
+
+    @Override
+    public Map<PopulationGroup, Double> getPopulationPercents() {
+        Long total = getTotalPopulation();
+        return population
+            .entrySet()
+            .stream()
+            .collect(
+                Collectors.toMap(
+                    p -> p.getKey(),
+                    p -> p.getValue() / total
+                        * CommonConstants.PERCENT
+                )
+            );
+    }
+
+    @Override
+    public Long getTotalPopulation() {
+        return population
+                .values()
+                .stream()
+                .mapToLong(p -> p)
+                .sum();
     }
 
     @Override
     public Long getPopulation(PopulationGroup group) {
-        return null;
+        return getPopulationGroups().get(group);
     }
 
     @Override
-    public Double getPopulationPercent(PopulationGroup group) {
-        return null;
+    public Double getPercentPopulation(PopulationGroup group) {
+        return getPopulationPercents().get(group);
     }
 }

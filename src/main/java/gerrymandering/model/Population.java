@@ -28,23 +28,11 @@ public class Population implements Serializable {
         return name;
     }
 
-    public void setName(PopulationGroup name) {
-        this.name = name;
-    }
-
     public Long getPopulation() {
         return population;
     }
 
-    public void setPopulation(Long population) {
-        this.population = population;
-    }
-
     public District getDistrict() {
         return district;
-    }
-
-    public void setDistrict(District district) {
-        this.district = district;
     }
 }

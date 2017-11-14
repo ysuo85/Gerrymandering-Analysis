@@ -15,12 +15,4 @@ public abstract class MultiDistrictRegion extends BipartisanRegion implements Se
     }
 
     public abstract List<District> getDistricts();
-
-    public void addDistrict(District district){
-
-    }
-
-    public void addDistricts(List<District> districts){
-
-    }
 }
