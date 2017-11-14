@@ -24,6 +24,11 @@ public class SuperDistrict extends MultiDistrictRegion {
     }
 
     @Override
+    public Long getTotalVotes() {
+        return null;
+    }
+
+    @Override
     public Map<Party, Double> getPercentVotes() {
         return null;
     }
@@ -44,17 +49,27 @@ public class SuperDistrict extends MultiDistrictRegion {
     }
 
     @Override
-    public Integer getTotalArea() {
+    public void addVotes(Map<Party, Votes> votes, Party party, Long numVotes) {
+
+    }
+
+    @Override
+    public Long getTotalArea() {
         return null;
     }
 
     @Override
-    public Map<PopulationGroup, Long> getTotalPopulation() {
+    public Map<PopulationGroup, Long> getPopulationGroups() {
         return null;
     }
 
     @Override
-    public Map<PopulationGroup, Double> getEthnicPercent() {
+    public Map<PopulationGroup, Double> getPopulationPercents() {
+        return null;
+    }
+
+    @Override
+    public Long getTotalPopulation() {
         return null;
     }
 
@@ -64,7 +79,7 @@ public class SuperDistrict extends MultiDistrictRegion {
     }
 
     @Override
-    public Double getPopulationPercent(PopulationGroup group) {
+    public Double getPercentPopulation(PopulationGroup group) {
         return null;
     }
 
@@ -73,3 +88,4 @@ public class SuperDistrict extends MultiDistrictRegion {
         return null;
     }
 }
+
