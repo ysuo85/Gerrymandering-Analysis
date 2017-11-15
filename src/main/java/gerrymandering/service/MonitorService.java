@@ -6,13 +6,10 @@ import gerrymandering.model.State;
 /**
  * Created by yisuo on 11/12/17.
  */
-public class MonitorService {
-    public void registerStateSelected(State state){
-    }
+public interface MonitorService {
+    public void registerStateSelected(State state);
 
-    public void registerDistrictSelected(District district){
-    }
+    public void registerDistrictSelected(District district);
 
-    public void registerWhatIfStateSelected(State state){
-    }
+    public void registerWhatIfStateSelected(State state);
 }

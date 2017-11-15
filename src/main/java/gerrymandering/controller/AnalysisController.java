@@ -1,7 +1,12 @@
 package gerrymandering.controller;
 
+import gerrymandering.api.ApiResponse;
+import gerrymandering.common.CommonConstants;
 import gerrymandering.model.GeoJson;
+import gerrymandering.service.ConfigurationService;
+import gerrymandering.service.GerrymanderMeasureService;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -10,45 +15,56 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Year;
 
 @RestController
 public class AnalysisController {
+	@Autowired
+    private GerrymanderMeasureService gerrymanderMeasureService;
+	@Autowired
+	private ConfigurationService configurationService;
 
-	@Value("classpath:out.geojson")
-	private Resource geoJsonResource;
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@ResponseBody
+	public ApiResponse test(){
+		GeoJson result = new GeoJson("This is a test");
+		return new ApiResponse(true, result);
+	}
 
-	// TODO: add support for different years
-	// TODO: use database instead of file resource
+	@RequestMapping(value = "/loadMap", method = RequestMethod.GET)
+	@ResponseBody
+	public ApiResponse loadMap(){
+		GeoJson result = configurationService.generateUSGeoJson();
+		if(result == null)
+			return new ApiResponse(false);
+		else
+			return new ApiResponse(true, result);
+	}
 
-	/**
-	 * @param stateName full name of state (e.g. "New York")
-	 * @return JSON (as String) containing state with district
-	**/
 	@RequestMapping(value = "/loadState", method = RequestMethod.GET)
 	@ResponseBody
-	public GeoJson loadState(@RequestParam(value="stateName", required=false, defaultValue="New York") String stateName) {
-		String ret = "";
-		// TODO: switch on stateName to load correct resource (currently always loads New York)
-		try {
-			InputStream inputStream  = geoJsonResource.getInputStream();	
-			ret = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-		}
-		catch(FileNotFoundException e) {
-			System.err.println("File Not Found Exception in AnalysisController loadStateTEST");
-			e.printStackTrace();
-		}
-		catch(IOException e) {
-			System.err.println("IOException in AnalysisController loadStateTEST");
-			e.printStackTrace();
-		}
-
-		return null;
+	public ApiResponse loadState(
+			@RequestParam(value="stateName") String stateName,
+			@RequestParam(value="year") Integer electionYear){
+	    GeoJson response = gerrymanderMeasureService.selectState(stateName, Year.of(electionYear));
+	    if(response == null)
+	    	return new ApiResponse(false);
+	    else
+	    	return new ApiResponse(true, response);
 	}
 
 	@RequestMapping(value = "/loadDistrict", method = RequestMethod.GET)
 	@ResponseBody
-	public GeoJson loadDistrict(@RequestParam String stateName, @RequestParam String districtNo){
-		return null;
+	public ApiResponse loadDistrict(
+			@RequestParam(value="stateName") String stateName,
+			@RequestParam(value="districtNo") Integer districtNo,
+			@RequestParam(value="year") Integer electionYear){
+		GeoJson response = gerrymanderMeasureService
+            .selectDistrict(stateName, districtNo, Year.of(electionYear));
+		if(response == null)
+			return new ApiResponse(false);
+		else
+			return new ApiResponse(true, response);
 	}
 
 	@RequestMapping(value = "/runMeasures", method = RequestMethod.POST)

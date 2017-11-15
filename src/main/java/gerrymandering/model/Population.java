@@ -8,6 +8,8 @@ import java.io.Serializable;
 /**
  * Created by yisuo on 11/13/17.
  */
+@Entity
+@Table(name = "Population")
 public class Population implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

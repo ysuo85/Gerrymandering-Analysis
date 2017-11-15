@@ -15,4 +15,5 @@ public interface StateRepository extends CrudRepository<State, Integer> {
     List<State> findByStateNameAndYear(String stateName, Integer year);
     List<State> findByStateId(Integer stateId);
     List<State> findByStateName(String stateName);
+    List<State> findAll();
 }

@@ -14,7 +14,7 @@ public class SuperDistrict extends MultiDistrictRegion {
     private String stateName;
 
     @Override
-    public Polygon getShape() {
+    public List<Boundary> getBoundaries() {
         return null;
     }
 

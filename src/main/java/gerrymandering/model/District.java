@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ public class District extends BipartisanRegion implements Serializable {
     @Column(name = "clickCount")
     private Integer clickCount;
     @ManyToOne(targetEntity = State.class)
+    @JoinColumn(name = "StateId", referencedColumnName = "Id")
     private State state;
     @OneToMany(mappedBy = "district")
     @MapKeyEnumerated(EnumType.STRING)
@@ -40,17 +42,12 @@ public class District extends BipartisanRegion implements Serializable {
     @MapKeyColumn(name = "Name")
     @Column(name = "Population")
     private Map<PopulationGroup, Long> population = new HashMap<>();
-    @JoinColumns({
-            @JoinColumn(table = "DistrictBoundaries", name = "Id",
-                        referencedColumnName = "DistrictId"),
-            @JoinColumn(table = "Boundaries", name = "BoundaryId", referencedColumnName = "Id")
-    })
-    @Column(name = "Shape")
-    private Polygon shape;
+    @OneToMany(mappedBy = "district", targetEntity = DistrictBoundary.class)
+    private List<Boundary> boundaries;
 
     @Override
-    public Polygon getShape() {
-        return shape;
+    public List<Boundary> getBoundaries() {
+        return boundaries;
     }
 
     @Override
@@ -150,5 +147,13 @@ public class District extends BipartisanRegion implements Serializable {
     @Override
     public Double getPercentPopulation(PopulationGroup group) {
         return getPopulationPercents().get(group);
+    }
+
+    public State getState(){
+        return state;
+    }
+
+    public Integer getDistrictNo(){
+        return districtNo;
     }
 }
