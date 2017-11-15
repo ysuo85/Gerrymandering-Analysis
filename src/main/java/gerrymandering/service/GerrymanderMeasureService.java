@@ -14,19 +14,12 @@ import java.util.Map;
 /**
  * Created by yisuo on 11/9/17.
  */
-public class GerrymanderMeasureService {
-    private Map<String, Measure> hr3057measures;
-    private Map<String, Measure> analysisMeasures;
+public interface GerrymanderMeasureService {
+    public List<MeasureResults> runStateWideMeasures(State state);
 
-    public List<MeasureResults> runStateWideMeasures(State state){
-        return null;
-    }
+    public List<MeasureResults> runHR3057Measures(SuperDistrict superDistrict);
 
-    public List<MeasureResults> runHR3057Measures(SuperDistrict superDistrict){
-        return null;
-    }
+    public GeoJson selectDistrict(Integer stateId, Integer districtId, Year electionYear);
 
-    public GeoJson selectRegion(State state, District district, Year electionYear){
-        return null;
-    }
+    public GeoJson selectState(Integer stateId, Year electionYear);
 }

@@ -9,28 +9,16 @@ import java.util.List;
 /**
  * Created by yisuo on 11/12/17.
  */
-public class GeoCalculationService {
-    public Point calculateCenter(GeoRegion region){
-        return null;
-    }
+public interface GeoCalculationService {
+    public Point calculateCenter(GeoRegion region);
 
-    public Double varianceFromCenter(GeoRegion region){
-        return 0.0;
-    }
+    public Double varianceFromCenter(GeoRegion region);
 
-    public Double calculatePerimeter(GeoRegion region){
-        return 0.0;
-    }
+    public Double calculatePerimeter(GeoRegion region);
 
-    public Double distance(Point a, Point b){
-        return 0.0;
-    }
+    public Double distance(Point a, Point b);
 
-    public GeoRegion mergeBoundaries(List<GeoRegion> boundaries){
-        return null;
-    }
+    public GeoRegion mergeBoundaries(List<GeoRegion> boundaries);
 
-    public List<District> findNeighbors(District district){
-        return null;
-    }
+    public List<District> findNeighbors(District district);
 }

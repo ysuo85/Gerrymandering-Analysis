@@ -11,24 +11,14 @@ import java.util.List;
 /**
  * Created by yisuo on 11/12/17.
  */
-public class WhatIfService {
-    public State combineDistrictsAuto(Collection<District> districts){
-        return null;
-    }
+public interface WhatIfService {
+    public State combineDistrictsAuto(Collection<District> districts);
 
-    public SuperDistrict combineDistrictsManual(Collection<District> districts){
-        return null;
-    }
+    public SuperDistrict combineDistrictsManual(Collection<District> districts);
 
-    public State saveCompletedWork(State completedWork){
-        return null;
-    }
+    public State saveCompletedWork(State completedWork);
 
-    public List<State> loadCompletedWorks(Integer numItems){
-        return null;
-    }
+    public List<State> loadCompletedWorks(Integer numItems);
 
-    public File downloadWork(State completedWork){
-        return null;
-    }
+    public File downloadWork(State completedWork);
 }

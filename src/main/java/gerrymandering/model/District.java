@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -40,16 +41,19 @@ public class District extends BipartisanRegion implements Serializable {
     @MapKeyColumn(name = "Name")
     @Column(name = "Population")
     private Map<PopulationGroup, Long> population = new HashMap<>();
-    @JoinColumns({
+    @ElementCollection
+    @CollectionTable(
+        joinColumns = {
             @JoinColumn(table = "DistrictBoundaries", name = "Id",
                         referencedColumnName = "DistrictId"),
             @JoinColumn(table = "Boundaries", name = "BoundaryId", referencedColumnName = "Id")
-    })
-    @Column(name = "Shape")
-    private Polygon shape;
+        }
+    )
+    @Column(name = "Shape", columnDefinition = "POLYGON")
+    private List<Polygon> shape;
 
     @Override
-    public Polygon getShape() {
+    public List<Polygon> getShape() {
         return shape;
     }
 

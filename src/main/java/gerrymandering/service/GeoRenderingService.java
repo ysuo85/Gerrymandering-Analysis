@@ -8,16 +8,10 @@ import gerrymandering.model.SuperDistrict;
 /**
  * Created by yisuo on 11/12/17.
  */
-public class GeoRenderingService {
-    public GeoJson buildGeoJson(State state){
-        return null;
-    }
+public interface GeoRenderingService {
+    public GeoJson buildGeoJson(State state);
 
-    public GeoJson buildGeoJson(District district){
-        return null;
-    }
+    public GeoJson buildGeoJson(District district);
 
-    public GeoJson buildGeoJson(SuperDistrict superDistrict){
-        return null;
-    }
+    public GeoJson buildGeoJson(SuperDistrict superDistrict);
 }
