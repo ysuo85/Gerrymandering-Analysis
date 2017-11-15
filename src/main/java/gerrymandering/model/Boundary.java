@@ -13,7 +13,7 @@ import javax.persistence.*;
 public abstract class Boundary {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Integer id;
+    protected Integer Id;
     @Column(name = "Shape", columnDefinition = "POLYGON")
     protected Polygon shape;
 

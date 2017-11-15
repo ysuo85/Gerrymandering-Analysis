@@ -4,7 +4,6 @@ import gerrymandering.model.District;
 import gerrymandering.model.GeoJson;
 import gerrymandering.model.State;
 import gerrymandering.model.SuperDistrict;
-
 import java.util.List;
 
 /**

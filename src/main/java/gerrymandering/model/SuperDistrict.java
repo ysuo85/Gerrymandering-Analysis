@@ -1,6 +1,5 @@
 package gerrymandering.model;
 
-import com.vividsolutions.jts.geom.Polygon;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
 

@@ -1,6 +1,6 @@
 package gerrymandering.model;
 
-import com.vividsolutions.jts.geom.Polygon;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class State extends MultiDistrictRegion implements Serializable {
     @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	private Integer Id;
     @Column(name = "StateId")
 	private Integer stateId;
     @Column(name = "StateName")
@@ -28,7 +28,7 @@ public class State extends MultiDistrictRegion implements Serializable {
     @OneToMany(mappedBy = "state")
 	private List<District> districtsInState = new ArrayList<>();
 	@OneToMany(mappedBy = "state", targetEntity = StateBoundary.class)
-	private List<Boundary> boundaries;
+	private List<Boundary> boundaries = new ArrayList<>();
     @Transient
 	private List<SuperDistrict> superDistricts = new ArrayList<>();
 
@@ -207,6 +207,9 @@ public class State extends MultiDistrictRegion implements Serializable {
 	public Year getYear(){
 		return Year.of(year);
 	}
+
+	@JsonProperty(value = "year")
+	public Integer getYearJackson() { return year; }
 
 	public Integer getStateId() {
 		return stateId;

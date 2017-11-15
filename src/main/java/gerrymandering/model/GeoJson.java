@@ -1,20 +1,20 @@
 package gerrymandering.model;
 
 import gerrymandering.measure.MeasureResults;
+import org.wololo.geojson.FeatureCollection;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class GeoJson {
-	private String json;
+	private FeatureCollection json;
 	private List<MeasureResults> results;
 
 	public GeoJson() {
 		results = new ArrayList<>();
 	}
 
-	public GeoJson(String geojson){
+	public GeoJson(FeatureCollection geojson){
 	    this();
 		this.json = geojson;
 	}
@@ -27,7 +27,7 @@ public class GeoJson {
 		results.addAll(r);
 	}
 
-	public String getJson(){
+	public FeatureCollection getJson(){
 		return json;
 	}
 

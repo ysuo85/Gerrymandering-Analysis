@@ -1,16 +1,12 @@
 package gerrymandering.model;
 
-import com.vividsolutions.jts.geom.Polygon;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +19,7 @@ import java.util.stream.Collectors;
 public class District extends BipartisanRegion implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Integer Id;
     @Column(name = "DistrictId")
     private Integer districtNo;
     @Column(name = "Area")
@@ -43,7 +39,7 @@ public class District extends BipartisanRegion implements Serializable {
     @Column(name = "Population")
     private Map<PopulationGroup, Long> population = new HashMap<>();
     @OneToMany(mappedBy = "district", targetEntity = DistrictBoundary.class)
-    private List<Boundary> boundaries;
+    private List<Boundary> boundaries = new ArrayList<>();
 
     @Override
     public List<Boundary> getBoundaries() {

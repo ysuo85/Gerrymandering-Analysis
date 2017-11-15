@@ -7,10 +7,8 @@ import gerrymandering.model.GeoJson;
 import gerrymandering.model.State;
 import gerrymandering.model.SuperDistrict;
 import gerrymandering.repository.DistrictRepository;
-import gerrymandering.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.Year;
 import java.util.List;
 

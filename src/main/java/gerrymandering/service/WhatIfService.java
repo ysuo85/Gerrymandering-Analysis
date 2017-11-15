@@ -3,7 +3,6 @@ package gerrymandering.service;
 import gerrymandering.model.District;
 import gerrymandering.model.State;
 import gerrymandering.model.SuperDistrict;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
