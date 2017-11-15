@@ -19,12 +19,16 @@ var virginia = {lat: 37.992699, lng: -78.292969};
 var northCarolina = {lat: 35.814249, lng: -80.709961};
 var init = true;
 var markers = [];
+var selectStateElement;
+var selectYearElement;
 
 //loading data from user selection variables
 var selectedState;
 var selectedYear;
 var selectedPair;
-
+//district data variable
+var districtVoteSum;
+var districtNum;
 // lopsided wins variables
 var margin = {top: 20, right: 20, bottom: 30, left: 90},
             width = 550 - margin.left - margin.right,
@@ -246,7 +250,7 @@ function initAutocomplete() {
     loadNorthCarolinaGeoJsonClickHandler(event); 
     selectStateByMarker1Click();
     selectStateByMarker2Click();
-    selectStateByMarker3Click();              
+    selectStateByMarker3Click();            
     
 }
 
@@ -300,6 +304,8 @@ function colorDistrictClickHandler(event){
 		console.log('map.data clicked');
 		console.log(event.feature);
 		event.feature.setProperty('isColorful', true);
+		
+		
 	});
 }
 function boundsChangedHandler(){
@@ -339,6 +345,7 @@ function placesChangedHandler(places){
 				title: place.name,
 				position: place.geometry.location
 			}));
+			
 			if (place.geometry.viewport) {
 			// Only geocodes have viewport.
 				bounds.union(place.geometry.viewport);
@@ -347,6 +354,7 @@ function placesChangedHandler(places){
 			}
 		});
 		map.fitBounds(bounds);
+		selectStateBySearchState(markers);
 	});
 }
 function mouseOverHandler(event) {
@@ -469,8 +477,8 @@ function selectStateByMarker1Click(){
     	marker2.info.close();
     	marker3.info.close();
         marker1 = this; 
-        var selectStateElement = document.getElementById('box1');
-        var selectYearElement= document.getElementById('box2');
+        selectStateElement = document.getElementById('box1');
+        selectYearElement= document.getElementById('box2');
         console.log("selectStateElement:"+selectStateElement);
         var options = selectStateElement.options;
         console.log("options:"+options);
@@ -484,7 +492,9 @@ function selectStateByMarker1Click(){
                 selectYearByDropDown(selectYearElement);//start tests on clicked state
                 break;
             }
-        }             
+        }
+        //dispayDistrictData(filteredData,newYorkDistricts);
+
                             
     });         
 }
@@ -494,8 +504,8 @@ function selectStateByMarker2Click(){
         marker1.info.close();
         marker3.info.close();
         marker2 = this; 
-        var selectStateElement = document.getElementById('box1');
-        var selectYearElement= document.getElementById('box2');
+        selectStateElement = document.getElementById('box1');
+        selectYearElement= document.getElementById('box2');
         console.log("selectStateElement:"+selectStateElement);
         var options = selectStateElement.options;
         console.log("options:"+options);
@@ -509,7 +519,8 @@ function selectStateByMarker2Click(){
                 selectYearByDropDown(selectYearElement);//start tests on clicked state
                 break;
             }
-        }             
+        } 
+                
                             
     });
 }
@@ -519,8 +530,8 @@ function selectStateByMarker3Click(){
         marker1.info.close();
         marker2.info.close();
         marker3 = this; 
-        var selectStateElement = document.getElementById('box1');
-        var selectYearElement= document.getElementById('box2');
+        selectStateElement = document.getElementById('box1');
+        selectYearElement= document.getElementById('box2');
         console.log("selectStateElement:"+selectStateElement);
         var options = selectStateElement.options;
         console.log("options:"+options);
@@ -534,7 +545,8 @@ function selectStateByMarker3Click(){
                 selectYearByDropDown(selectYearElement);//start tests on clicked state
                 break;
             }
-        }             
+        }
+                     
                             
     });     
 }
@@ -544,7 +556,7 @@ function selectStateByDropDown(element){
 	console.log("selectedState"+selectedState);
 }
 function selectYearByDropDown(element){
-	d3.json("/resources/js/test.json", function(data) {
+	d3.json("/resources/js/test.json", function(filteredData) {
     	selectedYear = element.options[element.selectedIndex].text;
         selectedPair=[
             ["State",selectedState],
@@ -552,10 +564,10 @@ function selectYearByDropDown(element){
         ];
        displayStateWithDescription(selectedState);       
        //get specific rows from data that pertain to the user's selection
-       data = data.filter(function(row) {
+       filteredData = filteredData.filter(function(row) {
             return row['State'] == selectedPair[0][1] && row['raceYear']==selectedPair[1][1];
         });
-       displayVoteSums(data);
+       displayVoteSums(filteredData);
        // remove old resulst and add the new graph canvas to the body of the webpage
        var svg1_Removal = d3.select("#visual"); //lopsided wins chart 
        svg1_Removal.selectAll("*").remove();       
@@ -578,9 +590,10 @@ function selectYearByDropDown(element){
                 .attr("height", height3 + margin2.bottom2)
                 .append("g")
                 .attr("transform", "translate(" + margin2.left2 + "," + margin2.top2 + ")");
-        displayLopsidedTestResults(data,svg1);
-        displayConsistentAdvantageTestResults(data,svg);
-        displayEfficiencyGapTestResults(data,svg2);
+        displayLopsidedTestResults(filteredData,svg1);
+        displayConsistentAdvantageTestResults(filteredData,svg);
+        displayEfficiencyGapTestResults(filteredData,svg2);
+        
     });
 }
 function displayStateWithDescription(selectedState){
@@ -636,9 +649,10 @@ function displayVoteSums(data){
                 return total + amount;
             }, 0);
             // add total votes for each party to the description for the state
-            document.getElementById("totalVotes").innerHTML = " Democrat Votes: "+demVoteSum+"  |   Republican Votes: "+repVoteSum;
+            document.getElementById("totalVotes").innerHTML = "Democrat Votes: "+demVoteSum+"  |   Republican Votes: "+repVoteSum;
              //find overall winner of state through retrieving the values 'Winner' column in each row relevant to the chosen state
     }
+
 //Start of Lopsided Wins Methods
 function displayLopsidedTestResults(data,svg1){
 	calculateLopsidedWinsMean_Median(data);
@@ -832,7 +846,7 @@ function calculateLopsidedWinsMean_Median(data){
                   //calculates the sum of all the elements in the array
                   sum = demVotePercentage.reduce(function(total,amount){
                     return total + amount;
-                  });
+                  }, 0);
                   mean = sum/ demVotePercentage.length;
                   var difference;
                   for(var i =0; i<demVotePercentage.length;i++){
@@ -1135,7 +1149,54 @@ function calculateLopsidedWinsMean_Median(data){
             if(republicanWonState==1){
               document.getElementById("efficiencyGapAnalysis").innerHTML = "In "+selectedPair[0][1]+"'s "+selectedPair[1][1]+" election, Republicans won their districts with "+ usedToWinRepVotes+ " votes, and Democrats won their districts with "+ usedToWinDemVotes+ " votes.  The Democrats unfortunately lost and therefore wasted all of their votes, while the Republicans wasted "+wastedRepVotes +" due to their win. The difference between the two parties’ win margins indicates "+selectedPair[0][1]+" may be gerrymandered to gain an advantage for Republicans. <br><br>";
             } 
+            
     }
+    //Additional functionality
+    function selectStateBySearchState(markers){
+    	console.log("markers:"+markers);
+    	var counter=0;
+    	var feature;
+    	var loopStop=false; 
+    	
+    	if(!markers[0].title.includes("New York")&&!markers[0].title.includes("NY")&&!markers[0].title.includes("North Carolina")&&!markers[0].title.includes("NC")&&
+    		!markers[0].title.includes("Virginia")&&!markers[0].title.includes("VA")){
+	   			return;
+	   	}
+		else{
+				var iteratorAsString;
+				console.log("title:"+markers[0].title);
+				/*
+				var searchstring = $('#pac-input');
+				searchstring.focus();
+				console.log("search string value:"+searchstring.val);
+				*/
+				if(markers[0].title.includes("NY")||markers[0].title.includes("New York")){
+					selectedState="New York";
+					iteratorAsString="0";
+					markerTitle1=selectedState;
+				}
+				else if(markers[0].title.includes("VA")||markers[0].title.includes("Virginia")){
+					selectedState="Virginia";
+					iteratorAsString="2";
+					markerTitle2=selectedState;
+				}
+				else if(markers[0].title.includes("NC")||markers[0].title.includes("North Carolina")){
+					selectedState="North Carolina";
+					iteratorAsString="1";
+					markerTitle3=selectedState;
+				}						
+				console.log("selectedState after search with searchbox:"+selectedState);
+				selectStateElement=document.getElementById('box1');
+				console.log("iteratorAsString after search:"+iteratorAsString);
+				selectStateElement.selectedIndex=iteratorAsString;
+				selectYearElement= document.getElementById('box2');
+                selectYearByDropDown(selectYearElement);//start tests on clicked state           
+	   		}
+
+    }
+    
+    
+
 google.maps.event.addDomListener(window, 'load', initMap);
 
 
