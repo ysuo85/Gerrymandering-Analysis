@@ -1,7 +1,9 @@
 package gerrymandering.controller;
 
 import gerrymandering.model.GeoJson;
+import gerrymandering.service.GerrymanderMeasureService;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +15,14 @@ import java.nio.charset.StandardCharsets;
 
 @RestController
 public class AnalysisController {
+	@Autowired
+    private GerrymanderMeasureService gerrymanderMeasureService;
 
 	@Value("classpath:out.geojson")
 	private Resource geoJsonResource;
 
 	// TODO: add support for different years
 	// TODO: use database instead of file resource
-
 	/**
 	 * @param stateName full name of state (e.g. "New York")
 	 * @return JSON (as String) containing state with district
