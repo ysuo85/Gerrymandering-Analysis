@@ -2,39 +2,59 @@ package gerrymandering.model;
 
 import gerrymandering.common.Party;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Created by yisuo on 11/7/17.
  */
-public class Votes {
-    private HashMap<Party, Integer> votes;
+@Entity
+@Table(name = "Votes")
+public class Votes implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer voteId;
+    @ManyToOne(targetEntity = District.class)
+    private District district;
+    @Enumerated(EnumType.STRING)
+    private Party party;
+    @Column(name = "voteCount")
+    private Long voteCount;
 
     public Votes(){
-
+        this.voteCount = 0L;
     }
 
-    public Party winningParty(){
-        return null;
+    public Votes(Party party){
+        this.party = party;
+        this.voteCount = 0L;
     }
 
-    public Party losingParty(){
-        return null;
+    public Votes(Party party, Long voteCount){
+        this.party = party;
+        this.voteCount = voteCount;
     }
 
-    public Integer getVotes(Party party){
-        return null;
+    public Votes(District district, Party party, Long voteCount){
+        this.district = district;
+        this.party = party;
+        this.voteCount = voteCount;
     }
 
-    public Double getPercentVotes(Party party){
-        return null;
+    public District getDistrict() {
+        return district;
     }
 
-    public Integer totalVotes(){
-        return null;
+    public Party getParty() {
+        return party;
     }
 
-    public void addVotes(Party party, Integer votes){
+    public Long getVoteCount() {
+        return voteCount;
+    }
 
+    public void addVotes(Long votes){
+        this.voteCount += votes;
     }
 }

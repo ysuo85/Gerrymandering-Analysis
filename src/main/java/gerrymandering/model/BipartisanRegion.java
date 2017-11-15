@@ -3,26 +3,25 @@ package gerrymandering.model;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
 
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Map;
 
-@MappedSuperclass
 public abstract class BipartisanRegion extends GeoRegion implements Serializable {
-    @Transient
-    private Votes votes;
-    @Transient
-    private Party electedParty;
-    private Integer area;
-    @Transient
-    private Map<PopulationGroup, Integer> population;
-
 	public BipartisanRegion() {
+		super();
 	}
 
-	public Map<PopulationGroup, Double> getEthnicPercent(){
-	    return null;
-    }
-
+	public abstract Map<Party, Votes> getVotes();
+	public abstract Long getTotalVotes();
+	public abstract Map<Party, Double> getPercentVotes();
+	public abstract Long getPartyVotes(Party party);
+	public abstract Double getPartyPercent(Party party);
+	public abstract Party getElectedParty();
+	public abstract void addVotes(Map<Party, Votes> votes, Party party, Long numVotes);
+	public abstract Long getTotalArea();
+	public abstract Map<PopulationGroup, Long> getPopulationGroups();
+	public abstract Map<PopulationGroup, Double> getPopulationPercents();
+	public abstract Long getTotalPopulation();
+	public abstract Long getPopulation(PopulationGroup group);
+	public abstract Double getPercentPopulation(PopulationGroup group);
 }

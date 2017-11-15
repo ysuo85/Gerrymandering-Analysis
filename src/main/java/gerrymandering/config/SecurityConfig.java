@@ -1,9 +1,15 @@
 package gerrymandering.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import javax.sql.DataSource;
+
 /**
  * Created by yisuo on 10/30/17.
  */
@@ -19,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .formLogin()
                 .loginPage("/login")
+                .usernameParameter("username").passwordParameter("password")
                 .permitAll()
                 .and()
             .logout()
@@ -36,19 +43,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sameOrigin();
     }
 
+
+    @Autowired
+    private DataSource dataSource;
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
         auth
-                .inMemoryAuthentication()
-                .withUser("ysuo").password("abc123").roles("ADMIN");
-        auth
-                .inMemoryAuthentication()
-                .withUser("bkestelman").password("abc123").roles("ADMIN");
-        auth
-                .inMemoryAuthentication()
-                .withUser("astaylor").password("abc123").roles("ADMIN");
-        auth
-                .inMemoryAuthentication()
-                .withUser("johnsonlu").password("abc123").roles("ADMIN");
+                .jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(passwordEncoder())
+                .usersByUsernameQuery(
+                        "select username,password, enabled from users where username=?")
+                .authoritiesByUsernameQuery(
+                        "select username, authority from authorities where username=?");
+    }
+
+    @Bean(name="passwordEncoder")
+    public PasswordEncoder passwordEncoder() {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder;
     }
 }
