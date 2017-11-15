@@ -20,8 +20,6 @@ import java.util.List;
 @Service("gerrymanderMeasureService")
 public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService {
     @Autowired
-    private StateRepository states;
-    @Autowired
     private DistrictRepository districts;
     @Autowired
     private GeoRenderingService geoJson;
@@ -47,9 +45,29 @@ public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService 
     }
 
     @Override
+    public GeoJson selectDistrict(String stateName, Integer districtId, Year electionYear){
+        List<District> found =
+            districts.findByDistrictNoAndStateNameAndYear(districtId, stateName, electionYear.getValue());
+        if(found.isEmpty())
+            return null;
+        else
+            return geoJson.buildGeoJson(found.get(CommonConstants.FIRST_ELEMENT));
+    }
+
+    @Override
     public GeoJson selectState(Integer stateId, Year electionYear) {
-        List<State> found =
-            states.findByStateIdAndYear(stateId, electionYear.getValue());
+        List<District> found =
+            districts.findByStateIdAndYear(stateId, electionYear.getValue());
+        if(found.isEmpty())
+            return null;
+        else
+            return geoJson.buildGeoJson(found.get(CommonConstants.FIRST_ELEMENT));
+    }
+
+    @Override
+    public GeoJson selectState(String stateName, Year electionYear){
+        List<District> found =
+            districts.findByStateNameAndYear(stateName, electionYear.getValue());
         if(found.isEmpty())
             return null;
         else

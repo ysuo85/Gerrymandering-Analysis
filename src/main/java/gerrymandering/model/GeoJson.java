@@ -27,6 +27,10 @@ public class GeoJson {
 		results.addAll(r);
 	}
 
+	public String getJson(){
+		return json;
+	}
+
 	public List<MeasureResults> getMeasureResults(){
 		return results;
 	}

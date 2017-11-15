@@ -21,5 +21,9 @@ public interface GerrymanderMeasureService {
 
     public GeoJson selectDistrict(Integer stateId, Integer districtId, Year electionYear);
 
+    public GeoJson selectDistrict(String stateName, Integer districtId, Year electionYear);
+
     public GeoJson selectState(Integer stateId, Year electionYear);
+
+    public GeoJson selectState(String stateName, Year electionYear);
 }

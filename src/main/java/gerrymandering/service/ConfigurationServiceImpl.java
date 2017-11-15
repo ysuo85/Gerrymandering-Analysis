@@ -21,7 +21,10 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Override
     public GeoJson generateUSGeoJson() {
         List<State> allUSStates = states.findAll();
-        return geoJson.buildGeoJson(allUSStates);
+        if(allUSStates.size() == 0)
+            return null;
+        else
+            return geoJson.buildGeoJson(allUSStates);
     }
 
     @Override
