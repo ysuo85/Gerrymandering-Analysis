@@ -21,4 +21,6 @@ public interface DistrictRepository extends CrudRepository<District, Integer> {
     List<District> findByDistrictNoAndStateIdAndYear(Integer districtNo, Integer stateId,
                                                      Integer year);
     List<District> findByDistrictNoAndStateId(Integer districtNo, Integer stateId);
+
+    List<District> findAll();
 }

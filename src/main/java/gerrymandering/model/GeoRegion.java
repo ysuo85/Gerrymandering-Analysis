@@ -11,5 +11,5 @@ public abstract class GeoRegion implements Serializable {
     public GeoRegion(){
 
     }
-    public abstract List<Polygon> getShape();
+    public abstract List<Boundary> getBoundaries();
 }

@@ -27,15 +27,8 @@ public class State extends MultiDistrictRegion implements Serializable {
 	private Integer clickCount;
     @OneToMany(mappedBy = "state")
 	private List<District> districtsInState = new ArrayList<>();
-	@ElementCollection
-	@CollectionTable(
-        joinColumns = {
-            @JoinColumn(table = "StateBoundaries", name = "Id", referencedColumnName = "StateId"),
-            @JoinColumn(table = "Boundaries", name = "BoundaryId", referencedColumnName = "Id")
-        }
-	)
-    @Column(name = "Shape", columnDefinition = "POLYGON")
-	private List<Polygon> shape;
+	@OneToMany(mappedBy = "state", targetEntity = StateBoundary.class)
+	private List<Boundary> boundaries;
     @Transient
 	private List<SuperDistrict> superDistricts = new ArrayList<>();
 
@@ -195,8 +188,8 @@ public class State extends MultiDistrictRegion implements Serializable {
 	}
 
 	@Override
-	public List<Polygon> getShape() {
-	    return shape;
+	public List<Boundary> getBoundaries() {
+	    return boundaries;
 	}
 
 	public void addSuperDistrict(SuperDistrict s){
