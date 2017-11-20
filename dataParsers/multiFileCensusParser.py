@@ -1,17 +1,14 @@
 import glob
 path = "CensusData/ny_census/*.csv"
-
 map  = {}
 
 for fpath in glob.glob(path):
     fileName = fpath.replace("CensusData/ny_census/", '')
     print(fileName)
     input = open(fpath, 'r')
-
     for line in input:
         line = line.replace('\"','')
         line = line.split(',')
-
         if len(line) > 4:
             if line[0].lower() == 'people' and line[1].lower()== 'race' or (line[1] == "Hispanic or Latino and Race" and line[2] == "Hispanic or Latino (of any race)"):
                 if line[2].lower() != 'one race':
@@ -23,8 +20,6 @@ for fpath in glob.glob(path):
                         temp = []
                         temp.append(line[3])
                         map[line[2]] = temp
-
-
     input.close()
 
 output = open("parsedFiles/nyCensus.csv", 'w')

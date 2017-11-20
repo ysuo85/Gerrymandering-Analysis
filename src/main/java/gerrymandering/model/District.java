@@ -1,16 +1,14 @@
 package gerrymandering.model;
 
-import com.vividsolutions.jts.geom.Polygon;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.common.Party;
 import gerrymandering.common.PopulationGroup;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,17 +21,17 @@ import java.util.stream.Collectors;
 public class District extends BipartisanRegion implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Integer Id;
     @Column(name = "DistrictId")
     private Integer districtNo;
     @Column(name = "Area")
     private Long area;
     @Column(name = "clickCount")
     private Integer clickCount;
-    @ManyToOne(targetEntity = State.class)
+    @ManyToOne(targetEntity = State.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "StateId", referencedColumnName = "Id")
     private State state;
-    @OneToMany(mappedBy = "district")
+    @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Party, Votes> votes = new HashMap<>();
     @ElementCollection
@@ -42,8 +40,10 @@ public class District extends BipartisanRegion implements Serializable {
     @MapKeyColumn(name = "Name")
     @Column(name = "Population")
     private Map<PopulationGroup, Long> population = new HashMap<>();
-    @OneToMany(mappedBy = "district", targetEntity = DistrictBoundary.class)
-    private List<Boundary> boundaries;
+    @OneToMany(targetEntity = DistrictBoundary.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "DistrictId")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Boundary> boundaries = new ArrayList<>();
 
     @Override
     public List<Boundary> getBoundaries() {

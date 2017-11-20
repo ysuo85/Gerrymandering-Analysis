@@ -4,7 +4,6 @@ import gerrymandering.common.Party;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashMap;
 
 /**
  * Created by yisuo on 11/7/17.
@@ -14,6 +13,7 @@ import java.util.HashMap;
 public class Votes implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "voteId")
     private Integer voteId;
     @ManyToOne(targetEntity = District.class)
     private District district;

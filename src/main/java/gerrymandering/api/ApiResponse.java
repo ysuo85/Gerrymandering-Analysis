@@ -1,8 +1,6 @@
 package gerrymandering.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import gerrymandering.model.GeoJson;
 
 /**
  * Created by yisuo on 11/15/17.

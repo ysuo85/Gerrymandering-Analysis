@@ -1,20 +1,11 @@
 package gerrymandering.controller;
 
 import gerrymandering.api.ApiResponse;
-import gerrymandering.common.CommonConstants;
 import gerrymandering.model.GeoJson;
 import gerrymandering.service.ConfigurationService;
 import gerrymandering.service.GerrymanderMeasureService;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.Year;
 
 @RestController
@@ -23,13 +14,6 @@ public class AnalysisController {
     private GerrymanderMeasureService gerrymanderMeasureService;
 	@Autowired
 	private ConfigurationService configurationService;
-
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	@ResponseBody
-	public ApiResponse test(){
-		GeoJson result = new GeoJson("This is a test");
-		return new ApiResponse(true, result);
-	}
 
 	@RequestMapping(value = "/loadMap", method = RequestMethod.GET)
 	@ResponseBody
@@ -69,7 +53,8 @@ public class AnalysisController {
 
 	@RequestMapping(value = "/runMeasures", method = RequestMethod.POST)
 	@ResponseBody
-	public String runMeasures(@RequestParam(value="stateName", required=false, defaultValue="New York") String stateName) {
+	public String runMeasures(
+			@RequestParam(value="stateName", required=false, defaultValue="New York") String stateName) {
 		String ret = "";
 		// TODO: call AnalysisService.runMeasures(stateName)
 		// TODO: use Jackson to change results into json

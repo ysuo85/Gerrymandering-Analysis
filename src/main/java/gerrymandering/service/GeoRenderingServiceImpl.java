@@ -10,7 +10,6 @@ import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
 import org.wololo.geojson.Geometry;
 import org.wololo.jts2geojson.GeoJSONWriter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,7 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         List<Feature> featureCollection =
             states.stream().map(this::buildState).collect(Collectors.toList());
         FeatureCollection result = writer.write(featureCollection);
-        return new GeoJson(result.toString());
+        return new GeoJson(result);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
             featureCollection.add(buildDistrict(district));
         });
         FeatureCollection result = writer.write(featureCollection);
-        return new GeoJson(result.toString());
+        return new GeoJson(result);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         List<Feature> featureCollection = new ArrayList<>();
         featureCollection.add(buildDistrict(district));
         FeatureCollection result = writer.write(featureCollection);
-        return new GeoJson(result.toString());
+        return new GeoJson(result);
     }
 
     @Override
@@ -59,6 +58,7 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
     private Feature buildState(State state){
         Map<String, Object> properties = new HashMap<>();
         properties.put("StateId", state.getStateId());
+        properties.put("StateName", state.getStateName());
 
         return buildFeature(state.getBoundaries(), properties);
     }
@@ -72,7 +72,6 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
     }
 
     private Feature buildFeature(List<Boundary> boundaries, Map<String, Object> properties){
-        Feature feature = null;
         Geometry converted = null;
         if(boundaries.size() == CommonConstants.CONTIGUOUS){
             Polygon polygon = boundaries.get(CommonConstants.FIRST_ELEMENT).getShape();

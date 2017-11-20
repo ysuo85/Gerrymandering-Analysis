@@ -5,6 +5,7 @@ import gerrymandering.model.State;
 import gerrymandering.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Created by yisuo on 11/15/17.
  */
 @Service("configurationService")
+@Transactional
 public class ConfigurationServiceImpl implements ConfigurationService {
     @Autowired
     private StateRepository states;
@@ -20,7 +22,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     @Override
     public GeoJson generateUSGeoJson() {
-        List<State> allUSStates = states.findAll();
+        List<State> allUSStates = states.findByYear(2016);
         if(allUSStates.size() == 0)
             return null;
         else

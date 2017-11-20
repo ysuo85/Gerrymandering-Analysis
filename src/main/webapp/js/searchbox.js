@@ -17,7 +17,8 @@ function initAutocomplete() {
 		return;
 		}
 		searchBox.setBounds(map.getBounds());
-		resetStyle(); // Make the Polygon at the center of the map red and make everything else grey (see function resetStyle())
+		resetStyle(); // Make the Polygon at the center of the map red and make everything else grey
+		              // (see function resetStyle())
 		map.data.revertStyle();
 	});
 	var markers = [];
@@ -66,45 +67,6 @@ function initAutocomplete() {
 		map.fitBounds(bounds);
 	});
 
-/**
- * Make Polygon at center of map red and make everything else grey. 
- * 
- * containsLocation() from the Google Maps API Geometry Library is the key function here
- * but it only accepts a Latlng and a Polygon
- * 
- * Since after the user searches for a state, the map centers on it, that state will contain
- * the center of the map (map.getCenter(), which returns a Latlng) 
- * Possible exception is Hawaii
- *
- * To obtain a Polygon from a feature:
- * First obtain Geometry with feature.getGeometry()
- * Then if Geometry is Polygon (not MultiPolygon), the Polygon will be in 
- * feature.getGeometry().getAt(0).getArray();
- * Open issue: how to handle features with MultiPolygon geometry 
- * console.log(feature.getGeometry()) is your friend, should reveal solution
- * The Google Maps API Reference Documentation contains useful information not in the Guides
-**/
-	function resetStyle() {
-		map.data.setStyle(function(feature) {
-			var color = 'grey'; // Make everything grey by default
-			if (feature.getProperty('isColorful')) {
-				color = feature.getProperty('color');
-			}
-			var geom = feature.getGeometry();
-			if(geom.getType() == "Polygon") {
-				var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
-				if(google.maps.geometry.poly.containsLocation(map.getCenter(), poly)) { 
-					color = 'red'; // If feature contains center of map, highlight it
-				}
-			}
-			return ({/** @type {google.maps.Data.StyleOptions} */
-				clickable: true,
-				fillColor: color,
-				strokeColor: color,
-				strokeWeight: 2
-			});
-		});
-	}	 
 	var coords={
 		'NY': '43.385888,-75.436524',
 		'VA':'37.992699,-78.292969',
@@ -117,6 +79,7 @@ function initAutocomplete() {
 	var newYork = {lat: 43.385888, lng: -75.436524};
 	var virginia = {lat: 37.992699, lng: -78.292969};
 	var northCarolina = {lat: 35.814249, lng: -80.709961};
+
 	map.data.setStyle(function(feature) {
 		var color = 'blue';
 		if (feature.getProperty('isColorful')) {
@@ -142,25 +105,6 @@ function initAutocomplete() {
 		console.log(event.feature);
 		event.feature.setProperty('isColorful', true);		
 	});
-	//added markers from selecting districts to zoom in on district
-	/*
-	var arrMarkers = []; 
-	google.maps.event.addListener(map, 'click', function(event) {
-    	addMarker(event.latLng);
-  	});
-
-	function addMarker(location) {
-  		marker = new google.maps.Marker({
-    		position: location,
-    		map: map
-  		});
-  		arrMarkers.push(marker);
-    	google.maps.event.addListener(marker, 'click', function() {
-    		map.panTo(this.getPosition());
-   	 		map.setZoom(9);
-  		});  
-  	}*/
-  	//end added
   	map.data.addListener('mouseover', function(event) {
 		map.data.revertStyle();
 		map.data.overrideStyle(event.feature, {strokeWeight: 4});
@@ -210,7 +154,7 @@ function initAutocomplete() {
     		map.data.remove(feature);
 		});	
       	
-			map.data.addGeoJson(data);		
+        map.data.addGeoJson(data);
 			
 		map.data.addGeoJson(tempObject15);
 		
@@ -233,8 +177,6 @@ function initAutocomplete() {
 		map.data.addGeoJson(tempObject24);
 		
 		map.data.addGeoJson(tempObject25);  
-
-		
     });
 	
 	marker3.addListener('click', function(event) {
@@ -257,10 +199,49 @@ function initAutocomplete() {
     	map.data.addGeoJson(tempObject12);
     	map.data.addGeoJson(tempObject13);
     	map.data.addGeoJson(tempObject14);
-	   });
-
-    
+    });
 }
+
+/**
+ * Make Polygon at center of map red and make everything else grey.
+ *
+ * containsLocation() from the Google Maps API Geometry Library is the key function here
+ * but it only accepts a Latlng and a Polygon
+ *
+ * Since after the user searches for a state, the map centers on it, that state will contain
+ * the center of the map (map.getCenter(), which returns a Latlng)
+ * Possible exception is Hawaii
+ *
+ * To obtain a Polygon from a feature:
+ * First obtain Geometry with feature.getGeometry()
+ * Then if Geometry is Polygon (not MultiPolygon), the Polygon will be in
+ * feature.getGeometry().getAt(0).getArray();
+ * Open issue: how to handle features with MultiPolygon geometry
+ * console.log(feature.getGeometry()) is your friend, should reveal solution
+ * The Google Maps API Reference Documentation contains useful information not in the Guides
+ **/
+function resetStyle() {
+    map.data.setStyle(function(feature) {
+        var color = 'grey'; // Make everything grey by default
+        if (feature.getProperty('isColorful')) {
+            color = feature.getProperty('color');
+        }
+        var geom = feature.getGeometry();
+        if(geom.getType() == "Polygon") {
+            var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
+            if(google.maps.geometry.poly.containsLocation(map.getCenter(), poly)) {
+                color = 'red'; // If feature contains center of map, highlight it
+            }
+        }
+        return ({/** @type {google.maps.Data.StyleOptions} */
+        clickable: true,
+            fillColor: color,
+            strokeColor: color,
+            strokeWeight: 2
+        });
+    });
+}
+
 google.maps.event.addDomListener(window, 'load', initMap);
 
 

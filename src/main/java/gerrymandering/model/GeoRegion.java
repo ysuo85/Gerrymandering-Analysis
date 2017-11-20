@@ -1,6 +1,5 @@
 package gerrymandering.model;
 
-import com.vividsolutions.jts.geom.Polygon;
 import java.io.Serializable;
 import java.util.List;
 

@@ -3,7 +3,6 @@ package gerrymandering.service;
 import com.vividsolutions.jts.geom.Point;
 import gerrymandering.model.District;
 import gerrymandering.model.GeoRegion;
-
 import java.util.List;
 
 /**
