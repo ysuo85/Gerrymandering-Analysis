@@ -5,6 +5,7 @@ import gerrymandering.model.State;
 import gerrymandering.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Created by yisuo on 11/15/17.
  */
 @Service("configurationService")
+@Transactional
 public class ConfigurationServiceImpl implements ConfigurationService {
     @Autowired
     private StateRepository states;

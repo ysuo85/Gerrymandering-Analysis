@@ -72,7 +72,6 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
     }
 
     private Feature buildFeature(List<Boundary> boundaries, Map<String, Object> properties){
-        Feature feature = null;
         Geometry converted = null;
         if(boundaries.size() == CommonConstants.CONTIGUOUS){
             Polygon polygon = boundaries.get(CommonConstants.FIRST_ELEMENT).getShape();

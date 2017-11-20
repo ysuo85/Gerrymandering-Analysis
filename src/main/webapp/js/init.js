@@ -655,7 +655,7 @@ function displayVoteSums(data) {
         return total + amount;
     }, 0);
     // add total votes for each party to the description for the state
-    document.getElementById("totalVotes").innerHTML = "Democrat Votes: " + demVoteSum + "  |   Republican Votes: " + repVoteSum;
+    document.getElementById("totalVotes").innerHTML = "Democratic Votes: " + demVoteSum + "  |   Republican Votes: " + repVoteSum;
     //find overall winner of state through retrieving the values 'Winner' column in each row relevant to the chosen state
 }
 

@@ -7,8 +7,11 @@ import gerrymandering.model.GeoJson;
 import gerrymandering.model.State;
 import gerrymandering.model.SuperDistrict;
 import gerrymandering.repository.DistrictRepository;
+import gerrymandering.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Year;
 import java.util.List;
 
@@ -16,7 +19,10 @@ import java.util.List;
  * Created by yisuo on 11/14/17.
  */
 @Service("gerrymanderMeasureService")
+@Transactional
 public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService {
+    @Autowired
+    private StateRepository states;
     @Autowired
     private DistrictRepository districts;
     @Autowired
@@ -54,8 +60,8 @@ public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService 
 
     @Override
     public GeoJson selectState(Integer stateId, Year electionYear) {
-        List<District> found =
-            districts.findByStateIdAndYear(stateId, electionYear.getValue());
+        List<State> found =
+            states.findByStateIdAndYear(stateId, electionYear.getValue());
         if(found.isEmpty())
             return null;
         else
@@ -64,8 +70,8 @@ public class GerrymanderMeasureServiceImpl implements GerrymanderMeasureService 
 
     @Override
     public GeoJson selectState(String stateName, Year electionYear){
-        List<District> found =
-            districts.findByStateNameAndYear(stateName, electionYear.getValue());
+        List<State> found =
+            states.findByStateNameAndYear(stateName, electionYear.getValue());
         if(found.isEmpty())
             return null;
         else
