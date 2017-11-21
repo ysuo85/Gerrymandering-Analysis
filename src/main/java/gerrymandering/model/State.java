@@ -29,7 +29,10 @@ public class State extends MultiDistrictRegion implements Serializable {
 	private Integer clickCount;
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL)
 	private List<District> districtsInState = new ArrayList<>();
-	@OneToMany(mappedBy = "state", targetEntity = StateBoundary.class, cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL, targetEntity = Boundary.class)
+    @JoinTable(name = "StateBoundaries",
+               joinColumns = @JoinColumn(name = "StateId", referencedColumnName = "Id"),
+	           inverseJoinColumns = @JoinColumn(name = "BoundaryId", referencedColumnName = "Id"))
 	private List<Boundary> boundaries = new ArrayList<>();
     @Transient
 	private List<SuperDistrict> superDistricts = new ArrayList<>();

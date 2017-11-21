@@ -180,83 +180,97 @@ function initAutocomplete() {
         zoom: 4,
         mapTypeId: 'roadmap'
     });
-    map.data.addGeoJson(data);
-    marker1 = new google.maps.Marker({
-        position: newYork,
-        map: map,
-        title: 'New York'
-    });
-    marker1.info = new google.maps.InfoWindow({
-        content: "New York"
-    });
-    marker2 = new google.maps.Marker({
-        position: virginia,
-        map: map,
-        title: 'Virginia'
-    });
-    marker2.info = new google.maps.InfoWindow({
-        content: "Virginia"
-    });
-    marker3 = new google.maps.Marker({
-        position: northCarolina,
-        map: map,
-        title: 'North Carolina'
-    });
-    marker3.info = new google.maps.InfoWindow({
-        content: "North Carolina"
-    });
-    // Create the search box and link it to the UI element.
-    input = document.getElementById('pac-input');
-    searchBox = new google.maps.places.SearchBox(input);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-    // Bias the SearchBox results towards current map's viewport.
-    map.addListener('bounds_changed', function () {
-        if (init) {
-            init = false;
-            return;
-        }
-        boundsChangedHandler();
-    });
-    // Listen for the event fired when the user selects a prediction and retrieve more details for that place.
-    placesChangedHandler(places);
-
-    function changeMap(city) {
-        var c = coords[city].split(',');
-        map.setCenter(new google.maps.LatLng(c[0], c[1]));
-    }
-
-    map.data.setStyle(function (feature) {
-        var color = 'blue';
-        if (feature.getProperty('isColorful')) {
-            color = feature.getProperty('color');
-        }
-        var geom = feature.getGeometry();
-        if (geom.getType() == "Polygon") {
-            var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
-            if (google.maps.geometry.poly.containsLocation(map.getCenter(), poly)) {
-                color = 'red';
+    $.ajax({
+        type: 'GET',
+        url: '/loadMap',
+        dataType: "json",
+        success: function(data){
+            console.log(data);
+            if(data.success === true){
+                geojson = data.response.json;
+                map.data.addGeoJson(geojson);
             }
+        },
+        error: function(data){
+            console.log('Please refresh the page and try again')
         }
-        return /** @type {google.maps.Data.StyleOptions} */({
-            clickable: true,
-            fillColor: color,
-            strokeColor: color,
-            strokeWeight: 2
-        });
     });
-
-    colorDistrictClickHandler(event);
-    mouseOverHandler(event);
-    mouseOutHandler(event);
-    newYorkMarkerClickHandler(event);
-    loadNewYorkGeoJsonClickHandler(event);
-    virginiaMarkerClickHandler(event);
-    loadVirginiaGeoJsonClickHandler(event);
-    northCarolinaMarkerClickHandler(event);
-    loadNorthCarolinaGeoJsonClickHandler(event);
-    selectStateByMarker1Click();
-    selectStateByMarker2Click();
-    selectStateByMarker3Click();
+    // marker1 = new google.maps.Marker({
+    //     position: newYork,
+    //     map: map,
+    //     title: 'New York'
+    // });
+    // marker1.info = new google.maps.InfoWindow({
+    //     content: "New York"
+    // });
+    // marker2 = new google.maps.Marker({
+    //     position: virginia,
+    //     map: map,
+    //     title: 'Virginia'
+    // });
+    // marker2.info = new google.maps.InfoWindow({
+    //     content: "Virginia"
+    // });
+    // marker3 = new google.maps.Marker({
+    //     position: northCarolina,
+    //     map: map,
+    //     title: 'North Carolina'
+    // });
+    // marker3.info = new google.maps.InfoWindow({
+    //     content: "North Carolina"
+    // });
+    // // Create the search box and link it to the UI element.
+    // input = document.getElementById('pac-input');
+    // searchBox = new google.maps.places.SearchBox(input);
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    // // Bias the SearchBox results towards current map's viewport.
+    // map.addListener('bounds_changed', function () {
+    //     if (init) {
+    //         init = false;
+    //         return;
+    //     }
+    //     boundsChangedHandler();
+    // });
+    // // Listen for the event fired when the user selects a prediction and retrieve more details for that place.
+    // placesChangedHandler(places);
+    //
+    // function changeMap(city) {
+    //     var c = coords[city].split(',');
+    //     map.setCenter(new google.maps.LatLng(c[0], c[1]));
+    // }
+    //
+    // map.data.setStyle(function (feature) {
+    //     var color = 'blue';
+    //     if (feature.getProperty('isColorful')) {
+    //         color = feature.getProperty('color');
+    //     }
+    //     var geom = feature.getGeometry();
+    //     if (geom.getType() == "Polygon") {
+    //         var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
+    //         if (google.maps.geometry.poly.containsLocation(map.getCenter(), poly)) {
+    //             color = 'red';
+    //         }
+    //     }
+    //     return /** @type {google.maps.Data.StyleOptions} */({
+    //         clickable: true,
+    //         fillColor: color,
+    //         strokeColor: color,
+    //         strokeWeight: 2
+    //     });
+    // });
+    //
+    // colorDistrictClickHandler(event);
+    // mouseOverHandler(event);
+    // mouseOutHandler(event);
+    // newYorkMarkerClickHandler(event);
+    // loadNewYorkGeoJsonClickHandler(event);
+    // virginiaMarkerClickHandler(event);
+    // loadVirginiaGeoJsonClickHandler(event);
+    // northCarolinaMarkerClickHandler(event);
+    // loadNorthCarolinaGeoJsonClickHandler(event);
+    // selectStateByMarker1Click();
+    // selectStateByMarker2Click();
+    // selectStateByMarker3Click();
 }
 
 /* functions for all respective handlers*/

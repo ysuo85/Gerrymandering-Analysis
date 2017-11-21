@@ -40,9 +40,10 @@ public class District extends BipartisanRegion implements Serializable {
     @MapKeyColumn(name = "Name")
     @Column(name = "Population")
     private Map<PopulationGroup, Long> population = new HashMap<>();
-    @OneToMany(targetEntity = DistrictBoundary.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "DistrictId")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = CascadeType.ALL, targetEntity = Boundary.class)
+    @JoinTable(name = "DistrictBoundaries",
+            joinColumns = @JoinColumn(name = "DistrictId", referencedColumnName = "Id"),
+            inverseJoinColumns = @JoinColumn(name = "BoundaryId", referencedColumnName = "Id"))
     private List<Boundary> boundaries = new ArrayList<>();
 
     @Override

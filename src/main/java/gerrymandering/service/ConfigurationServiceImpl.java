@@ -22,7 +22,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     @Override
     public GeoJson generateUSGeoJson() {
-        List<State> allUSStates = states.findByYear(2016);
+        List<State> allUSStates = states.findByYear(2000);
         if(allUSStates.size() == 0)
             return null;
         else
