@@ -1,13 +1,23 @@
+var marker1;
+var marker2;
+var marker3;
+var markerTitle1;
+var markerTitle2;
+var markerTitle3;
+var map;
+var searchBox;
+var input;
+var places;
 function initAutocomplete() {
-	var map = new google.maps.Map(document.getElementById('map'), {
+	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 38.541291, lng: -99.896488},
 		zoom: 4,
 		mapTypeId: 'roadmap'
 	});
 	map.data.addGeoJson(data); 
 	// Create the search box and link it to the UI element.
-	var input = document.getElementById('pac-input');
-	var searchBox = new google.maps.places.SearchBox(input);
+	input = document.getElementById('pac-input');
+	searchBox = new google.maps.places.SearchBox(input);
 	map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 	var init = true;
 	// Bias the SearchBox results towards current map's viewport.
@@ -25,19 +35,19 @@ function initAutocomplete() {
 	// Listen for the event fired when the user selects a prediction and retrieve
 	// more details for that place.
 	searchBox.addListener('places_changed', function() {
-		var places = searchBox.getPlaces();
+		places = searchBox.getPlaces();
 		if (places.length == 0) {
 			return;
 		}
 		// Clear out the old markers.
 		markers.forEach(function(marker) {
 				marker.setMap(null);
-				});
+		});
 		markers = [];
 		// For each place, get the icon, name and location.
 		var bounds = new google.maps.LatLngBounds();
-		places.forEach(function(place) {
-			if (!place.geometry) {
+		places.forEach(function(place){
+			if (!place.geometry){
 				console.log("Returned place contains no geometry");
 				return;
 			}
@@ -48,7 +58,6 @@ function initAutocomplete() {
 				anchor: new google.maps.Point(17, 34),
 				scaledSize: new google.maps.Size(25, 25)
 			};
-
 			// Create a marker for each place.
 			markers.push(new google.maps.Marker({
 				map: map,
@@ -56,7 +65,6 @@ function initAutocomplete() {
 				title: place.name,
 				position: place.geometry.location
 			}));
-
 			if (place.geometry.viewport) {
 			// Only geocodes have viewport.
 				bounds.union(place.geometry.viewport);
@@ -106,47 +114,93 @@ function initAutocomplete() {
 		event.feature.setProperty('isColorful', true);		
 	});
   	map.data.addListener('mouseover', function(event) {
-		map.data.revertStyle();
-		map.data.overrideStyle(event.feature, {strokeWeight: 4});
+  		mouseOverHandler(event);
+		//map.data.revertStyle();
+		//map.data.overrideStyle(event.feature, {strokeWeight: 4});
 	});
 
 	map.data.addListener('mouseout', function(event) {
 		map.data.revertStyle();
 	}); 
-	var marker1 = new google.maps.Marker({
+	marker1 = new google.maps.Marker({
 		position: newYork,
 		map: map,
 		title: 'New York'
 	});
-	var marker2 = new google.maps.Marker({
+	marker1.info = new google.maps.InfoWindow({
+  		content: "New York"
+	});
+
+
+	marker2 = new google.maps.Marker({
 		position: virginia,
 		map: map,
 		title: 'Virginia'
 	});
-	var marker3 = new google.maps.Marker({
+	marker2.info = new google.maps.InfoWindow({
+  		content: "Virginia"
+	});
+	marker3 = new google.maps.Marker({
 		position: northCarolina,
 		map: map,
 		title: 'North Carolina'
 	});
+	marker3.info = new google.maps.InfoWindow({
+  		content: "North Carolina"
+	});
 	marker1.addListener('click', function() {
        map.setZoom(6);
        map.setCenter(marker1.getPosition());
-       var markerTitle1=this.getTitle();
+       markerTitle1=this.getTitle();
        console.log("markerTitle1"+markerTitle1);
   	});
 	
 	marker2.addListener('click', function() {
        map.setZoom(6);
        map.setCenter(marker2.getPosition());
-       var markerTitle2=this.getTitle();
+       markerTitle2=this.getTitle();
        console.log("markerTitle2"+markerTitle2);
   	});
   	marker3.addListener('click', function() {
        map.setZoom(6);
        map.setCenter(marker3.getPosition());
-       var markerTitle3=this.getTitle();
+       markerTitle3=this.getTitle();
        console.log("markerTitle3"+markerTitle3);
   	});
+  	marker1.addListener('click', function(event) {
+              /* Setup event handler to remove GeoJSON features*/
+              map.data.forEach(function (feature) {
+                map.data.remove(feature);
+              });
+              //load geojson from data.js file to recreate the new map with New York's districts         
+            map.data.addGeoJson(data);   
+            map.data.addGeoJson(tempObject26);    
+            map.data.addGeoJson(tempObject27);    
+            map.data.addGeoJson(tempObject28);    
+            map.data.addGeoJson(tempObject29);    
+            map.data.addGeoJson(tempObject30);    
+            map.data.addGeoJson(tempObject31);    
+            map.data.addGeoJson(tempObject32);    
+            map.data.addGeoJson(tempObject33);    
+            map.data.addGeoJson(tempObject34);    
+            map.data.addGeoJson(tempObject35);    
+            map.data.addGeoJson(tempObject36); 
+            map.data.addGeoJson(tempObject37);    
+            map.data.addGeoJson(tempObject38);
+            map.data.addGeoJson(tempObject39);
+            map.data.addGeoJson(tempObject40);
+            map.data.addGeoJson(tempObject41);
+            map.data.addGeoJson(tempObject42);
+            map.data.addGeoJson(tempObject43);
+            map.data.addGeoJson(tempObject44); 
+            map.data.addGeoJson(tempObject45);  //-->possible problem with this object 
+            map.data.addGeoJson(tempObject46);
+            map.data.addGeoJson(tempObject47);
+            map.data.addGeoJson(tempObject48);
+            map.data.addGeoJson(tempObject49);
+            map.data.addGeoJson(tempObject50);
+            map.data.addGeoJson(tempObject51);               
+          });
 
 
   	marker2.addListener('click', function(event) {
@@ -245,3 +299,7 @@ function resetStyle() {
 google.maps.event.addDomListener(window, 'load', initMap);
 
 
+function mouseOverHandler(event) {
+	map.data.revertStyle();
+	map.data.overrideStyle(event.feature, {strokeWeight: 4});
+}

@@ -10,19 +10,19 @@
       <script src="http://d3js.org/d3.v3.min.js"></script>
       <script src="/resources/js/data.js"></script>
       <script src="/resources/js/accordionLayout.js"></script>
+      <script src="/resources/js/styling.js"></script>
+      <script src="/resources/js/populateData.js"></script>
+      <script src="/resources/js/lopsidedChart.js"></script>
+      <script src="/resources/js/consistentAdvantageChart.js"></script>
+      <script src="/resources/js/efficiencyGapChart.js"></script>
+      <script src="/resources/js/stateDescription.js"></script>
+      <script src="/resources/js/markerSelection.js"></script>
+      <script src="/resources/js/eventHandlers.js"></script>
       <script src="/resources/js/init.js"></script>
       <script src="/resources/js/scatterData.js"></script>
       <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEISuccfcM7cm-Kil-HufVS9mu3kNKrHM&libraries=places,geometry&callback=initAutocomplete">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEISuccfcM7cm-Kil-HufVS9mu3kNKrHM&libraries=places,geometry&callback=initializeMap">
       </script>
-      <!--
-      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-      <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-      
-      <script src="https://d3js.org/d3-path.v1.min.js"></script>
-      <script src="https://d3js.org/d3-shape.v1.min.js"></script>
-      <script src="http://d3js.org/d3.v3.min.js"></script>
-      -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
       <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
@@ -151,7 +151,8 @@
             <!--
             <iframe style="width: 100%; height:400px" src="/www/searchbox.html"></iframe> 
             -->
-            <div class="col-md-6" id="map" style="width:575px;height:450px;"></div>                        
+            
+            <div class="col-md-6" id="map" style="width:575px;height:450px;"></div>
             <div class="col-md-6">              
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -172,7 +173,7 @@
                 <option value="142">2002</option>
                 <option value="142">2000</option>
               </select>                
-              <a class="btn btn-primary dropdown-toggle" href="./basic user redistricting.html">Make Super Districts&nbsp;</a>
+              <a class="btn btn-primary dropdown-toggle" href="./whatif.html">Make Super Districts&nbsp;</a>
               <div id="selection"></div>  
               <div id="totalVotes"></div>     
               <p id="p1">
@@ -322,7 +323,7 @@ The remaining members of the victim party are then "cracked"so that they compris
         <div class="row">
           <div class="col-sm-6">
             <h1>Gerrymandering of the U.S.</h1>
-            "Gerrymandering is one of the great political curses of our single-member district plurality system and one that can only truly be lifted by adopting proportional representation."            -- Professor Douglass Amy, Real Choices, New Voices, Columbia University Press,            New York, 1993
+            "Gerrymandering is one of the great political curses of our single-member district plurality system and one that can only truly be lifted by adopting proportional representation."<br/>-- Professor Douglass Amy, Real Choices, New Voices, Columbia University Press, <br/>New York, 1993
           </div>
           <div class="col-sm-6">
             <p class="text-info text-right">

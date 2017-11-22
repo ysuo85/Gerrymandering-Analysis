@@ -3,7 +3,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/resources/js/carousel.js"></script>
+    <script src="/resources/js/carousel.js"></script>
+    <script src="https://d3js.org/d3-path.v1.min.js"></script>
+    <script src="https://d3js.org/d3-shape.v1.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="/resources/js/data.js"></script>
+    <script src="/resources/js/accordionLayout.js"></script>
+    <script src="/resources/js/styling.js"></script>
+    <script src="/resources/js/scatterData.js"></script><!-- test.json as a javascript file-->
+    <script src="/resources/js/eventHandlers.js"></script>
+    <script src="/resources/js/populateWhatIfData.js"></script>
+    <script src="/resources/js/initWhatIfMap.js"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEISuccfcM7cm-Kil-HufVS9mu3kNKrHM&libraries=places,geometry&callback=initializeWhatIfMap">
+      </script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/resources/style/whatif.css" rel="stylesheet" type="text/css">
   </head>
@@ -69,24 +83,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-6">
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <iframe style="width: 100%; height:400px" src="https://jsfiddle.net/dLauhepk/92/embedded/result"></iframe>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
+            <div class="col-md-6" id="map" style="width:575px;height:450px;"></div>
             <div>
               <a class="btn btn-lg btn-primary" style="; margin-bottom:5px;margin-right:50px">Download Image</a>
             </div>

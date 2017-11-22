@@ -1,9 +1,11 @@
+
 var marker1;
 var marker2;
 var marker3;
 var markerTitle1;
 var markerTitle2;
 var markerTitle3;
+
 var map;
 //var searchGeocoder;
 var searchBox;
@@ -18,17 +20,21 @@ var newYork = {lat: 43.385888, lng: -75.436524};
 var virginia = {lat: 37.992699, lng: -78.292969};
 var northCarolina = {lat: 35.814249, lng: -80.709961};
 var markers = [];
+/*
 var selectStateElement;
 var selectYearElement;
 var areaInfoWindow;
 //loading data from user selection variables
-var selectedState;
-var selectedYear;
-var selectedPair;
+*/
+var selectedState="New York";
+var selectedYear=2016;
+/*
 var districtVoteSum;
 var districtNum;
-
-function initializeMap() { 
+*/
+function initializeWhatIfMap(selectedState,selectedYear) { 
+	console.log("selectedState"+selectedState);
+	console.log("selectedYear"+selectedYear);
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 38.541291, lng: -99.896488},
 		zoom: 3,
@@ -63,14 +69,16 @@ function initializeMap() {
 
 	initSearchbox();
 	/*start initial scenario that runs tests on "New York, 2016" as selected Pair*/
-	selectStateElement = document.getElementById('box1');
-    selectYearElement= document.getElementById('box2');
-    selectStateElement.selectedIndex="0";
-    selectedState="New York"; // state changes but year stays the same
-    selectYearElement.selectedIndex="0";
-    selectedYear="2016";
-    selectYearByDropDown(selectYearElement);
+	//selectStateElement = document.getElementById('box1');
+    //selectYearElement= document.getElementById('box2');
+    //selectStateElement.selectedIndex="0";
+    //selectedState="New York"; // state changes but year stays the same
+    //selectYearElement.selectedIndex="0";
+    //selectedYear="2016";
+
     /*initiate google map functionality*/
+    loadSelectedStateFromAnalyzePage(selectedState,selectedYear);
+	/*
 	newYorkMarkerClickListener(map, marker1,markerTitle1);
     loadNewYorkGeoJsonClickListener(map, marker1);
     virginiaMarkerClickListener(map, marker2,markerTitle2);
@@ -79,7 +87,7 @@ function initializeMap() {
     loadNorthCarolinaGeoJsonClickListener(map, marker3);
     mouseOverListener(map);
     mouseOutListener(map);
-    initializeWhatIfMap(selectedState,selectedYear,selectStateElement,selectYearElement);
+    */
 }
 
 function initSearchbox(){
