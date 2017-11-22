@@ -79,7 +79,7 @@ function initializeMap() {
     loadNorthCarolinaGeoJsonClickListener(map, marker3);
     mouseOverListener(map);
     mouseOutListener(map);
-    initializeWhatIfMap(selectedState,selectedYear,selectStateElement,selectYearElement);
+    //initializeWhatIfMap(selectedState,selectedYear,selectStateElement,selectYearElement);
 }
 
 function initSearchbox(){
