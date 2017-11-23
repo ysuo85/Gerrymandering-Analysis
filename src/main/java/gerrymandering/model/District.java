@@ -33,6 +33,7 @@ public class District extends BipartisanRegion implements Serializable {
     private State state;
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     @MapKeyEnumerated(EnumType.STRING)
+    @MapKeyColumn(name = "Party")
     private Map<Party, Votes> votes = new HashMap<>();
     @ElementCollection
     @CollectionTable(name = "Population", joinColumns = @JoinColumn(name = "DistrictId"))

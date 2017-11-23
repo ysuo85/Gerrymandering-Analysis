@@ -1,9 +1,6 @@
 package gerrymandering.service;
 
-import com.vividsolutions.jts.algorithm.ConvexHull;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.*;
 import gerrymandering.common.CommonConstants;
 import gerrymandering.model.*;
 import org.springframework.stereotype.Service;
@@ -11,10 +8,8 @@ import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
 import org.wololo.geojson.Geometry;
 import org.wololo.jts2geojson.GeoJSONWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -60,7 +55,8 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         Map<String, Object> properties = new HashMap<>();
         properties.put("StateId", state.getStateId());
         properties.put("StateName", state.getStateName());
-
+        properties.put("ElectedParty", state.getElectedParty());
+        addCentroid(state, properties);
         return buildFeature(state.getBoundaries(), properties);
     }
 
@@ -68,7 +64,8 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         Map<String, Object> properties = new HashMap<>();
         properties.put("StateId", district.getState().getStateId());
         properties.put("DistrictNo", district.getDistrictNo());
-
+        properties.put("ElectedParty", district.getElectedParty());
+        addCentroid(district, properties);
         return buildFeature(district.getBoundaries(), properties);
     }
 
@@ -85,5 +82,18 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
             converted = writer.write(multi);
         }
         return new Feature(converted, properties);
+    }
+
+    private void addCentroid(GeoRegion region, Map<String, Object> properties){
+        List<Boundary> boundaries = region.getBoundaries();
+        Point mainArea = boundaries
+                .stream()
+                .max((a, b) -> a.getShape().getArea() > b.getShape().getArea() ? 1 : -1)
+                .get()
+                .getShape()
+                .getCentroid();
+
+        properties.put("CenterX", mainArea.getX());
+        properties.put("CenterY", mainArea.getY());
     }
 }

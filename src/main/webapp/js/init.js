@@ -1,30 +1,25 @@
 // google map variables
-var marker1;
-var marker2;
-var marker3;
-var markerTitle1;
-var markerTitle2;
-var markerTitle3;
+const setting = {
+    countryZoom: 2,
+    stateZoom: 5,
+    districtZoom: 6,
+    defaultYear: 2016,
+    strokeDefault: 2,
+    strokeHovered: 4
+};
+
 var map;
 var searchBox;
 var input;
 var places;
-var coords = {
-    'NY': '43.385888,-75.436524',
-    'VA': '37.992699,-78.292969',
-    'NC': '35.814249,-80.709961'
-};
-var newYork = {lat: 43.385888, lng: -75.436524};
-var virginia = {lat: 37.992699, lng: -78.292969};
-var northCarolina = {lat: 35.814249, lng: -80.709961};
 var init = true;
-var markers = [];
 var selectStateElement;
 var selectYearElement;
 
 //loading data from user selection variables
-var selectedState;
-var selectedYear;
+var selectedState = null;
+var selectedDistrict = null;
+var selectedYear = setting.defaultYear;
 var selectedPair;
 //district data variable
 var districtVoteSum;
@@ -177,7 +172,7 @@ var options;
 function initAutocomplete() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 38.541291, lng: -99.896488},
-        zoom: 4,
+        zoom: setting.countryZoom,
         mapTypeId: 'roadmap'
     });
     $.ajax({
@@ -189,36 +184,15 @@ function initAutocomplete() {
             if(data.success === true){
                 geojson = data.response.json;
                 map.data.addGeoJson(geojson);
+                resetStyle();
+                enableStateSelect();
+                enableHover();
             }
         },
         error: function(data){
             console.log('Please refresh the page and try again')
         }
     });
-    // marker1 = new google.maps.Marker({
-    //     position: newYork,
-    //     map: map,
-    //     title: 'New York'
-    // });
-    // marker1.info = new google.maps.InfoWindow({
-    //     content: "New York"
-    // });
-    // marker2 = new google.maps.Marker({
-    //     position: virginia,
-    //     map: map,
-    //     title: 'Virginia'
-    // });
-    // marker2.info = new google.maps.InfoWindow({
-    //     content: "Virginia"
-    // });
-    // marker3 = new google.maps.Marker({
-    //     position: northCarolina,
-    //     map: map,
-    //     title: 'North Carolina'
-    // });
-    // marker3.info = new google.maps.InfoWindow({
-    //     content: "North Carolina"
-    // });
     // // Create the search box and link it to the UI element.
     // input = document.getElementById('pac-input');
     // searchBox = new google.maps.places.SearchBox(input);
@@ -294,25 +268,118 @@ function resetStyle() {
      * The Google Maps API Reference Documentation contains useful information not in the Guides
      **/
     map.data.setStyle(function (feature) {
-        var color = 'grey'; // Make everything grey by default
-        if (feature.getProperty('isColorful')) {
-            color = feature.getProperty('color');
+        var fillColor = null;
+        var strokeColor = 'grey';
+        if(feature.getProperty('ElectedParty') === "Democrat"){
+            fillColor = 'blue';
         }
-        var geom = feature.getGeometry();
-        if (geom.getType() == "Polygon") {
-            var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
-            if (google.maps.geometry.poly.containsLocation(map.getCenter(), poly)) {
-                color = 'red'; // If feature contains center of map, highlight it
-            }
+        else if(feature.getProperty('ElectedParty') === "Republican"){
+            fillColor = 'red';
         }
-        //else if(multipolygon) {access polygon array}
+        if(feature.getProperty('StateName') === "Alaska"){
+            console.log("Latitude: " + feature.getProperty('CenterY'));
+            console.log("Longitude: " + feature.getProperty('CenterX'));
+        }
         return ({
             /** @type {google.maps.Data.StyleOptions} */
             clickable: true,
-            fillColor: color,
-            strokeColor: color,
-            strokeWeight: 2
+            fillColor: fillColor,
+            strokeColor: strokeColor,
+            strokeWeight: setting.strokeDefault,
+            zIndex: setting.countryZoom
         });
+    });
+}
+
+function enableHover(){
+    map.data.addListener('mouseover', function(event){
+        map.data.overrideStyle(event.feature, {strokeWeight: setting.strokeHovered});
+    });
+
+    map.data.addListener('mouseout', function(event){
+        map.data.overrideStyle(event.feature, {strokeWeight: setting.strokeDefault});
+    });
+}
+
+function enableStateSelect() {
+    map.data.addListener('click', function (event) {
+        var feature = event.feature;
+        var stateName = feature.getProperty('StateName');
+        if (stateName
+            && (selectedState != null
+            && feature.getProperty('StateId') != selectedState.features[0].getProperty('StateId'))
+            || selectedState == null) {
+            center = {lat: feature.getProperty('CenterY'), lng: feature.getProperty('CenterX')};
+            loadStateJson(stateName, selectedYear, function(response){
+                if (response.success === true)
+                    renderState(stateName, response.response.json, center);
+            });
+        }
+    });
+
+    map.data.addListener('addfeature', function(event){
+        var feature = event.feature;
+        map.data.overrideStyle(feature, {zIndex: setting.districtZoom});
+    });
+}
+
+function enableDistrictSelect(selected) {
+    var features = selected.features;
+    return map.data.addListener('click', function(event){
+        features.some(feature => {
+            if(feature.getProperty('DistrictNo') === event.feature.getProperty('DistrictNo')){
+                var center = {lat: event.feature.getProperty('CenterY'), lng: event.feature.getProperty('CenterX')};
+                renderDistrict(center, feature);
+            }
+        });
+    });
+}
+
+function renderState(stateName, stateJson, center) {
+    map.setCenter(center);
+    map.setZoom(setting.stateZoom);
+
+    if(selectedState != null){
+        selectedState.features.forEach(feature => {map.data.remove(feature)});
+        selectedState.listener.remove();
+    }
+    selectedState = {name: stateName, features: map.data.addGeoJson(stateJson)};
+    selectedState.listener = enableDistrictSelect(selectedState);
+    dynamicZoom(selectedState.features);
+}
+
+function renderDistrict(center, feature){
+    map.setCenter(center);
+    dynamicZoom([feature]);
+}
+
+function dynamicZoom(features){
+    var bounds = new google.maps.LatLngBounds();
+    features.forEach(feature => {
+        var g = feature.getGeometry();
+        g.forEachLatLng(point => {
+            bounds.extend(point);
+        });
+    });
+    map.fitBounds(bounds);
+}
+
+
+function loadStateJson(stateName, year, callback){
+    $.ajax({
+        type: 'GET',
+        url: "/loadState?stateName=" + stateName + "&year=" + year,
+        dataType: "json",
+        success: callback
+    });
+}
+
+function loadDistrictJson(stateName, districtNo, year, callback){
+    $.ajax({
+        type: 'GET',
+        url: "/loadDistrict?stateName=" + stateName + "&districtNo=" + districtNo + "&year=" + year,
+        dataType: "json",
+        success: callback
     });
 }
 
