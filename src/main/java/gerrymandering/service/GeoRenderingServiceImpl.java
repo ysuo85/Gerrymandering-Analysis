@@ -55,7 +55,7 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         Map<String, Object> properties = new HashMap<>();
         properties.put("StateId", state.getStateId());
         properties.put("StateName", state.getStateName());
-        properties.put("ElectedParty", state.getElectedParty());
+        addElectionData(state, properties);
         addCentroid(state, properties);
         return buildFeature(state.getBoundaries(), properties);
     }
@@ -64,7 +64,7 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         Map<String, Object> properties = new HashMap<>();
         properties.put("StateId", district.getState().getStateId());
         properties.put("DistrictNo", district.getDistrictNo());
-        properties.put("ElectedParty", district.getElectedParty());
+        addElectionData(district, properties);
         addCentroid(district, properties);
         return buildFeature(district.getBoundaries(), properties);
     }
@@ -82,6 +82,16 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
             converted = writer.write(multi);
         }
         return new Feature(converted, properties);
+    }
+
+    private void addElectionData(BipartisanRegion electionRegion, Map<String, Object> properties){
+        properties.put("ElectedParty", electionRegion.getElectedParty());
+        properties.put("Votes", electionRegion.getVotes());
+        properties.put("TotalVotes", electionRegion.getTotalVotes());
+//        properties.put("TotalPopulation", electionRegion.getTotalPopulation());
+//        properties.put("Population", electionRegion.getPopulationGroups());
+//        properties.put("PercentPopulation", electionRegion.getPopulationPercents());
+        properties.put("PercentVotes", electionRegion.getPercentVotes());
     }
 
     private void addCentroid(GeoRegion region, Map<String, Object> properties){

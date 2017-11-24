@@ -15,14 +15,6 @@
       <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEISuccfcM7cm-Kil-HufVS9mu3kNKrHM&libraries=places,geometry&callback=initAutocomplete">
       </script>
-      <!--
-      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-      <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-      
-      <script src="https://d3js.org/d3-path.v1.min.js"></script>
-      <script src="https://d3js.org/d3-shape.v1.min.js"></script>
-      <script src="http://d3js.org/d3.v3.min.js"></script>
-      -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
       <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
@@ -156,11 +148,6 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;
-              <select id="box1" onChange="selectStateByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
-                <option value="98">New York</option>
-                <option value="7122">North Carolina</option>
-                <option value="142">Virginia</option>
-              </select>
               <select id="box2" onChange="selectYearByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
                 <option value="98">2016</option>
                 <option value="142">2014</option>
@@ -171,7 +158,12 @@
                 <option value="142">2004</option>
                 <option value="142">2002</option>
                 <option value="142">2000</option>
-              </select>                
+              </select>
+              <select id="box1" onChange="selectStateByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
+                <option value="98">New York</option>
+                <option value="7122">North Carolina</option>
+                <option value="142">Virginia</option>
+              </select>
               <a class="btn btn-primary dropdown-toggle" href="./basic user redistricting.html">Make Super Districts&nbsp;</a>
               <div id="selection"></div>  
               <div id="totalVotes"></div>     

@@ -53,8 +53,14 @@ public class District extends BipartisanRegion implements Serializable {
     }
 
     @Override
-    public Map<Party, Votes> getVotes() {
-        return votes;
+    public Map<Party, Long> getVotes() {
+        return votes
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                    entry -> entry.getKey(),
+                    entry -> entry.getValue().getVoteCount()
+                ));
     }
 
     @Override
@@ -98,7 +104,7 @@ public class District extends BipartisanRegion implements Serializable {
         return Collections.max(
                 getVotes().entrySet(),
                 (a, b) ->
-                    a.getValue().getVoteCount() > b.getValue().getVoteCount() ? 1 : -1
+                    a.getValue() > b.getValue() ? 1 : -1
                ).getKey();
     }
 
@@ -126,7 +132,7 @@ public class District extends BipartisanRegion implements Serializable {
             .collect(
                 Collectors.toMap(
                     p -> p.getKey(),
-                    p -> p.getValue() / total
+                    p -> p.getValue() / new Double(total)
                         * CommonConstants.PERCENT
                 )
             );

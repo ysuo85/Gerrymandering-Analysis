@@ -11,7 +11,7 @@ public abstract class BipartisanRegion extends GeoRegion implements Serializable
 		super();
 	}
 
-	public abstract Map<Party, Votes> getVotes();
+	public abstract Map<Party, Long> getVotes();
 	public abstract Long getTotalVotes();
 	public abstract Map<Party, Double> getPercentVotes();
 	public abstract Long getPartyVotes(Party party);
