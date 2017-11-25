@@ -6,7 +6,8 @@
     <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="../style/index.css" rel="stylesheet" type="text/css">
 
-  </head><body>
+  </head>
+  <body>
     <div class="section">
       <div class="col-md-12 text-right">
         <a href="./basic user register.html" class="btn btn-lg btn-primary"><i class="fa fa-fw fa-lg fa-laptop" style="margin-right:5px"></i>Advanced Users</a>
