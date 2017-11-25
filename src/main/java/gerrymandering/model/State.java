@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 @Table(name = "States")
 public class State extends MultiDistrictRegion implements Serializable {
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
+	@Column(name = "Id")
 	private Integer Id;
     @Column(name = "StateId")
 	private Integer stateId;
@@ -29,7 +30,10 @@ public class State extends MultiDistrictRegion implements Serializable {
 	private Integer clickCount;
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL)
 	private List<District> districtsInState = new ArrayList<>();
-	@OneToMany(mappedBy = "state", targetEntity = StateBoundary.class, cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL, targetEntity = Boundary.class)
+    @JoinTable(name = "StateBoundaries",
+               joinColumns = @JoinColumn(name = "StateId", referencedColumnName = "Id"),
+	           inverseJoinColumns = @JoinColumn(name = "BoundaryId", referencedColumnName = "Id"))
 	private List<Boundary> boundaries = new ArrayList<>();
     @Transient
 	private List<SuperDistrict> superDistricts = new ArrayList<>();
@@ -44,18 +48,20 @@ public class State extends MultiDistrictRegion implements Serializable {
 	}
 
 	@Override
-	public Map<Party, Votes> getVotes() {
-	    Map<Party, Votes> result = new HashMap<>();
+	public Map<Party, Long> getVotes() {
+	    Map<Party, Long> result = new HashMap<>();
 	    List<Party> parties = Arrays.asList(Party.values());
 
 	    parties.forEach(party -> {
-	    	result.put(party, new Votes(party));
+	    	result.put(party, 0L);
 		});
 
 		districtsInState.forEach(district -> {
 			parties.forEach(party -> {
 				Long v = district.getPartyVotes(party);
-				result.get(party).addVotes(v);
+				Long partyVotes = result.get(party);
+				partyVotes += v;
+				result.put(party, partyVotes);
 			});
 		});
 
@@ -64,12 +70,12 @@ public class State extends MultiDistrictRegion implements Serializable {
 
 	@Override
 	public Long getTotalVotes() {
-	    Map<Party, Votes> allParties = getVotes();
+	    Map<Party, Long> allParties = getVotes();
 	    Long sum = 0L;
-	    Collection<Votes> allVotes = allParties.values();
+	    Collection<Long> allVotes = allParties.values();
 
-	    for(Votes vote : allVotes){
-	    	sum += vote.getVoteCount();
+	    for(Long vote : allVotes){
+	    	sum += vote;
 		}
 
 		return sum;
@@ -78,7 +84,7 @@ public class State extends MultiDistrictRegion implements Serializable {
 	@Override
 	public Map<Party, Double> getPercentVotes() {
 	    Long totalVotes = getTotalVotes();
-	    Map<Party, Votes> allVotes = getVotes();
+	    Map<Party, Long> allVotes = getVotes();
 
 		return allVotes
                 .entrySet()
@@ -86,7 +92,7 @@ public class State extends MultiDistrictRegion implements Serializable {
                 .collect(
                     Collectors.toMap(
                         p -> p.getKey(),
-						p -> p.getValue().getVoteCount()
+						p -> p.getValue()
                                 / new Double(totalVotes)
 								* CommonConstants.PERCENT
 					)
@@ -95,7 +101,7 @@ public class State extends MultiDistrictRegion implements Serializable {
 
 	@Override
 	public Long getPartyVotes(Party party) {
-		return getVotes().get(party).getVoteCount();
+		return getVotes().get(party);
 	}
 
 	@Override
@@ -146,8 +152,11 @@ public class State extends MultiDistrictRegion implements Serializable {
 		});
 	    districtsInState.forEach(district -> {
 	    	ethnicGroups.forEach(group -> {
+	    	    Map<PopulationGroup, Long> groups = district.getPopulationGroups();
 	    		Long groupInDist = result.get(group);
-	    		groupInDist += district.getPopulation(group);
+	    		if(groups.size() > 0)
+                    groupInDist += groups.get(group);
+	    		result.put(group, groupInDist);
 			});
 		});
 	    return result;

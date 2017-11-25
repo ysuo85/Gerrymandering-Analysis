@@ -16,8 +16,10 @@ public class Votes implements Serializable {
     @Column(name = "voteId")
     private Integer voteId;
     @ManyToOne(targetEntity = District.class)
+    @JoinColumn(name = "DistrictId", referencedColumnName = "Id")
     private District district;
     @Enumerated(EnumType.STRING)
+    @Column(name = "Party")
     private Party party;
     @Column(name = "voteCount")
     private Long voteCount;

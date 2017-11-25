@@ -18,7 +18,7 @@ public class SuperDistrict extends MultiDistrictRegion {
     }
 
     @Override
-    public Map<Party, Votes> getVotes() {
+    public Map<Party, Long> getVotes() {
         return null;
     }
 
