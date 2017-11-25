@@ -1,7 +1,6 @@
 <html>
     <head>
         <title> Register Account</title>
-        <link href="/resources/style/index.css" rel="stylesheet" type="text/css">
     </head>
     <body>
         <h1>Register Account</h1>
@@ -14,6 +13,7 @@
             <label>Confirm Password:</label>
             <input type="password" name="passwordConfirm"><br><br>
             <input type="submit" value="Registration">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
         </div>
     </body>

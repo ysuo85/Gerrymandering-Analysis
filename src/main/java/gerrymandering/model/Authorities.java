@@ -5,7 +5,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "authorities")
-public class authorities {
+public class Authorities {
     @Id
     private String username;
     @Column(name = "authority")
