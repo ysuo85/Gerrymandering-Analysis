@@ -2,8 +2,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+      <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+      <script type="text/javascript" src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
       <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
       <script src="https://d3js.org/d3-path.v1.min.js"></script>
       <script src="https://d3js.org/d3-shape.v1.min.js"></script>
@@ -23,9 +23,9 @@
       <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEISuccfcM7cm-Kil-HufVS9mu3kNKrHM&libraries=places,geometry&callback=initializeMap">
       </script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
       <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
       <link rel="stylesheet" href="/resources/style/searchbox.css">
     <style>
       td, th {
@@ -148,33 +148,19 @@
       <div class="container">
         <div class="row">
           <br>
-            <!--
-            <iframe style="width: 100%; height:400px" src="/www/searchbox.html"></iframe> 
-            -->
-            
-            <div class="col-md-6" id="map" style="width:575px;height:450px;"></div>
-            <div class="col-md-6">              
+            <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+            <div class="col-md-6" id="map" style="width:575px;height:450px;">
+            </div>
+            <div class="col-md-6">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;&nbsp;
-              <select id="box1" onChange="selectStateByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
-                <option value="98">New York</option>
-                <option value="7122">North Carolina</option>
-                <option value="142">Virginia</option>
-              </select>
               <select id="box2" onChange="selectYearByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
-                <option value="98">2016</option>
-                <option value="142">2014</option>
-                <option value="142">2012</option>
-                <option value="142">2010</option>
-                <option value="142">2008</option>
-                <option value="142">2006</option>
-                <option value="142">2004</option>
-                <option value="142">2002</option>
-                <option value="142">2000</option>
-              </select>                
-              <a class="btn btn-primary dropdown-toggle" href="./whatif.html">Make Super Districts&nbsp;</a>
-              <div id="selection"></div>  
+              </select>
+              <select id="box1" onChange="selectStateByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
+              </select>
+              <a class="btn btn-primary dropdown-toggle" href="./basic user redistricting.html">Make Super Districts&nbsp;</a>
+              <div id="selection"></div>
               <div id="totalVotes"></div>     
               <p id="p1">
                 <br/>

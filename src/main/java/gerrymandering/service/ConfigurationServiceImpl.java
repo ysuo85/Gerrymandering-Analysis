@@ -21,8 +21,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private GeoRenderingService geoJson;
 
     @Override
-    public GeoJson generateUSGeoJson() {
-        List<State> allUSStates = states.findByYear(2016);
+    public GeoJson generateUSGeoJson(Integer year) {
+        List<State> allUSStates = states.findByYear(year);
         if(allUSStates.size() == 0)
             return null;
         else
@@ -32,5 +32,15 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Override
     public State getStateByZipcode(Integer zipcode) {
         return null;
+    }
+
+    @Override
+    public List<Integer> getAllYears() {
+        return states.findAllDistinctYear();
+    }
+
+    @Override
+    public List<String> getAllStateNames() {
+        return states.findAllDistinctStateName();
     }
 }
