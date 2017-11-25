@@ -175,22 +175,35 @@ function initAutocomplete() {
         zoom: setting.countryZoom,
         mapTypeId: 'roadmap'
     });
-    $.ajax({
-        type: 'GET',
-        url: '/loadMap',
-        dataType: "json",
-        success: function(data){
-            console.log(data);
-            if(data.success === true){
-                geojson = data.response.json;
-                map.data.addGeoJson(geojson);
-                resetStyle();
-                enableStateSelect();
-                enableHover();
-            }
-        },
-        error: function(data){
-            console.log('Please refresh the page and try again')
+
+    $.getJSON('/loadMap?year=' + selectedYear, function(data){
+        if(data.success === true) {
+            geojson = data.response.json;
+            map.data.addGeoJson(geojson);
+            resetStyle();
+            enableStateSelect();
+            enableHover();
+        }
+    });
+
+    $.getJSON('/allYears', function(data){
+        if(data.success === true) {
+            initYearDropdown(data.response);
+        }
+    });
+
+    $.getJSON('/allStates', function(data){
+        if(data.success === true) {
+            initStatesDropdown(data.response);
+            $(function(){
+                $('#pac-input').autocomplete({
+                    source: data.response,
+                    minLength : 2,
+                    select: function(event, ui){
+                        processStateByName(ui.item.value);
+                    }
+                });
+            });
         }
     });
 }
@@ -346,27 +359,31 @@ function loadDistrictJson(stateName, districtNo, year, callback){
     });
 }
 
+function initYearDropdown(allYearsJson){
+    allYearsJson.forEach((year, index) => {
+        $('#box2').append(
+            $('<option>', {
+                value: index,
+                text: year
+            })
+        );
+    });
+}
+
+function initStatesDropdown(allStatesJson){
+    allStatesJson.forEach((state, index) => {
+        $('#box1').append(
+            $('<option>', {
+                value: index,
+                text: state
+            })
+        );
+    });
+}
+
 function selectStateByDropDown(element) {
     var stateName = element.options[element.selectedIndex].text;
-    var center = null;
-    var voteSums = null;
-    map.data.forEach(feature => {
-        if(feature.getProperty('StateName') === stateName){
-            center = {lat: feature.getProperty('CenterY'), lng: feature.getProperty('CenterX')};
-            voteSums = {
-                votes: feature.getProperty('Votes'),
-                totalVotes: feature.getProperty('TotalVotes'),
-                percentVotes: feature.getProperty('PercentVotes')
-            };
-        }
-    });
-    loadStateJson(stateName, selectedYear, function(response){
-        if(response.success === true){
-            renderState(stateName, response.response.json, center);
-            displayStateWithDescription(stateName);
-            displayVoteSums(voteSums);
-        }
-    });
+    processStateByName(stateName);
     d3.json("/resources/js/test.json", function (filteredData) {
         //get specific rows from data that pertain to the user's selection
         filteredData = filteredData.filter(function (row) {
@@ -409,7 +426,7 @@ function selectYearByDropDown(element) {
         });
         $.ajax({
             type: 'GET',
-            url: '/loadMap',
+            url: '/loadMap?year=' + selectedYear,
             dataType: "json",
             success: function(data){
                 if(data.success === true){
@@ -426,6 +443,28 @@ function selectYearByDropDown(element) {
             }
         });
     }
+}
+
+function processStateByName(stateName){
+    var center = null;
+    var voteSums = null;
+    map.data.forEach(feature => {
+        if(feature.getProperty('StateName') === stateName){
+            center = {lat: feature.getProperty('CenterY'), lng: feature.getProperty('CenterX')};
+            voteSums = {
+                votes: feature.getProperty('Votes'),
+                totalVotes: feature.getProperty('TotalVotes'),
+                percentVotes: feature.getProperty('PercentVotes')
+            };
+        }
+    });
+    loadStateJson(stateName, selectedYear, function(response){
+        if(response.success === true){
+            renderState(stateName, response.response.json, center);
+            displayStateWithDescription(stateName);
+            displayVoteSums(voteSums);
+        }
+    });
 }
 
 function displayStateWithDescription(stateName) {
@@ -992,6 +1031,11 @@ function selectStateBySearchState(markers) {
         selectYearElement = document.getElementById('box2');
         selectYearByDropDown(selectYearElement);//start tests on clicked state
     }
+}
+
+function boundsChangedHandler() {
+    searchBox.setBounds(map.getBounds());
+    resetStyle(); // Make the Polygon at the center of the map red and make everything else grey (see function resetStyle())
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);

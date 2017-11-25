@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @AttributeOverride(name = "area", column = @Column(name = "Area"))
 public class District extends BipartisanRegion implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "Id")
     private Integer Id;
     @Column(name = "DistrictId")
