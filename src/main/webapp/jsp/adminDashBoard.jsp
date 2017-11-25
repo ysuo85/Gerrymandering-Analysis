@@ -24,8 +24,15 @@
                                 <a href="#">Home</a>
                             </li>
                             <li>
+                                <a href="/approveUsers">Approve Users</a>
+                            </li>
+                            <li>
+                                <a href="#">Invite Admins</a>
+                            </li>
+                            <li>
                                 <a href="#">Contacts</a>
                             </li>
+
                             <li>
                                 <form name="f" action="/logout" method="post">
                                     <c:if test="${not empty pageContext.request.remoteUser}">
