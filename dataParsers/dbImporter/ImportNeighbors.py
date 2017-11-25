@@ -20,6 +20,7 @@ Population = None
 pp = pprint.PrettyPrinter(depth=6)
 
 stateFPs = {}
+Neighbors = []
 
 def connectToDB():
     global Session
@@ -34,7 +35,7 @@ def connectToDB():
 
     conURL = open('../Connection', 'r')
     connection_string = conURL.readline()
-    engine = create_engine(connection_string, echo=True)
+    engine = create_engine(connection_string, echo=False)
     Session = sessionmaker(bind=engine)
     session = Session()
     #conn = engine.connect()
@@ -51,10 +52,11 @@ def connectToDB():
 
 def main():
     connectToDB()
-    importNeighbor()
+    initImportNeighbor()
     session.commit()
+    return
 
-def importNeighbor():
+def initImportNeighbor():
     for yr in range(2002, 2020):
         # find state by year
         states = findStatesByYear(yr)
@@ -63,11 +65,33 @@ def importNeighbor():
             districtBounds = findDistrictBoundariesBySId(stateId)
 
             if(len(districtBounds) > 0):
+                # for each boundary in a state check if they are touching another boundary in that state
                 for boundary1 in districtBounds:
                     for boundary2 in districtBounds:
-                        if boundary1 != boundary2:
-                            isNeighbor = findNeighbors(boundary1[1], boundary2[1])
 
+                        if boundary1 != boundary2 and boundary1[0] != boundary2[0]:      # don't check a boundary against itself
+                            isNeighbor = findNeighbors(boundary1[1], boundary2[1])       # and make sure they aren't from the same district
+
+                            if isNeighbor == 1:
+                                tempNeighbor = (boundary1[0], boundary2[0])
+                                # check if that set of neighbors hasn't already be inserted.
+                                if tempNeighbor not in Neighbors :
+                                    # add to database
+                                    Neighbors.append(tempNeighbor)
+                                    importNeighbor(boundary1[0], boundary2[0])
+    return
+
+def importNeighbor(districtA, districtB):
+
+    try:
+        ins = " INSERT INTO gerrymandering.Neighbors(DistrictAId, DistrictBId)" \
+              + " VALUES(" + str(districtA) + "," + str(districtB) + ")"
+
+        session.execute(ins)
+    except:
+        return False    # failed to insert
+
+    return True
 
 def findDistrictBoundariesBySId(stateId):
     d = " SELECT Districts.Id, ST_AsText(Boundaries.Shape) " \
@@ -98,6 +122,19 @@ def findStatesByYear(yr):
 
 def findNeighbors(g1, g2):
     isNeighbor = 0
+
+    s = " SELECT ST_TOUCHES(" \
+        + " polygonfromtext(\'" + g1 + "\'),polygonfromtext(\'" + g2 + "\'))"
+
+    for row in session.execute(s):
+        isNeighbor = row[0]
+
+    if isNeighbor == 0:
+        s = " SELECT st_intersects(" \
+            + " polygonfromtext(\'" + g1 + "\'),polygonfromtext(\'" + g2 + "\'))"
+
+        for row in session.execute(s):
+            isNeighbor = row[0]
 
     return isNeighbor
 
