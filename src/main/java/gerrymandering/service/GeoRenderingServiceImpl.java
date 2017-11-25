@@ -88,9 +88,9 @@ public class GeoRenderingServiceImpl implements GeoRenderingService {
         properties.put("ElectedParty", electionRegion.getElectedParty());
         properties.put("Votes", electionRegion.getVotes());
         properties.put("TotalVotes", electionRegion.getTotalVotes());
-//        properties.put("TotalPopulation", electionRegion.getTotalPopulation());
-//        properties.put("Population", electionRegion.getPopulationGroups());
-//        properties.put("PercentPopulation", electionRegion.getPopulationPercents());
+        properties.put("TotalPopulation", electionRegion.getTotalPopulation());
+        properties.put("Population", electionRegion.getPopulationGroups());
+        properties.put("PercentPopulation", electionRegion.getPopulationPercents());
         properties.put("PercentVotes", electionRegion.getPercentVotes());
     }
 

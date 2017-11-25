@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 @AttributeOverride(name = "area", column = @Column(name = "Area"))
 public class District extends BipartisanRegion implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id")
     private Integer Id;
     @Column(name = "DistrictId")
     private Integer districtNo;
@@ -28,14 +29,14 @@ public class District extends BipartisanRegion implements Serializable {
     private Long area;
     @Column(name = "clickCount")
     private Integer clickCount;
-    @ManyToOne(targetEntity = State.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = State.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "StateId", referencedColumnName = "Id")
     private State state;
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     @MapKeyEnumerated(EnumType.STRING)
     @MapKeyColumn(name = "Party")
     private Map<Party, Votes> votes = new HashMap<>();
-    @ElementCollection
+    @ElementCollection()
     @CollectionTable(name = "Population", joinColumns = @JoinColumn(name = "DistrictId"))
     @MapKeyEnumerated(EnumType.STRING)
     @MapKeyColumn(name = "Name")
@@ -163,5 +164,13 @@ public class District extends BipartisanRegion implements Serializable {
 
     public Integer getDistrictNo(){
         return districtNo;
+    }
+
+    public Integer getId() {
+        return Id;
+    }
+
+    public void setId(Integer id) {
+        Id = id;
     }
 }

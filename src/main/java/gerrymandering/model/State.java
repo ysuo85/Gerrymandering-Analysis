@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 @Table(name = "States")
 public class State extends MultiDistrictRegion implements Serializable {
     @Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "Id")
 	private Integer Id;
     @Column(name = "StateId")
 	private Integer stateId;
@@ -151,8 +152,9 @@ public class State extends MultiDistrictRegion implements Serializable {
 		});
 	    districtsInState.forEach(district -> {
 	    	ethnicGroups.forEach(group -> {
+	    	    Map<PopulationGroup, Long> groups = district.getPopulationGroups();
 	    		Long groupInDist = result.get(group);
-	    		groupInDist += district.getPopulation(group);
+	    		groupInDist += groups.get(group);
 	    		result.put(group, groupInDist);
 			});
 		});
