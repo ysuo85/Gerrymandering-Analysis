@@ -192,7 +192,7 @@ function startSuperDistrictBuild(stateName, stateJson, center){
     selectedState.features.forEach(feature => {
         map.data.overrideStyle(feature, {fillColor: 'grey', strokeColor: 'black', fillOpacity: 1.0, strokeOpacity: 1.0});
     });
-    selectedState.listener = addToSuperDistrictListener(map, selectedState);
+    selectedState.listener = superDistrictListener(map, selectedState);
     dynamicZoom(selectedState.features);
 }
 
