@@ -1,3 +1,9 @@
+var areaInfoWindow;
+var listOfSuperDistricts=[];//list of super-districts - each super-district is a list of features
+var colorFillArray=['orange','green','purple','red','blue','black'];
+var colorFillArrayLength=0;
+var startingNewSuperDistrict=0;
+
 function selectDistrictByClickListener(map,data,areaInfoWindow) {
 	// When the user clicks, set 'isColorful', and change color of district.
 	var contentString,districtDemVotes=0,districtRepVotes=0;
@@ -32,13 +38,19 @@ function selectDistrictByClickHandler(map,event,areaInfoWindow,demVotesArray,rep
     	});
     	areaInfoWindow.open(map);		
 }
-function addToSuperDistrictListener(map){
-	map.data.addListener('click', function(event) {
-		addToSuperDistrictHandler(map,event.feature);	
-	});
+function addToSuperDistrictListener(map, selected){
+    var features = selected.features;
+    return map.data.addListener('click', function(event){
+        features.some(feature => {
+            if(feature.getProperty('DistrictNo') === event.feature.getProperty('DistrictNo')){
+                addToSuperDistrictHandler(map,event.feature);
+            }
+        });
+    });
 }
+
 function addToSuperDistrictHandler(map,eventFeature){
-    var selectedDistrictId = eventFeature.getProperty('CD115FP');
+    var selectedDistrictId = eventFeature.getProperty('DistrictNo');
     var selectedDistrictGeom = eventFeature.getGeometry();
     var selectedDistrictGeomLatLngArray=[];
     var selectedDistrictGeomLatLng;
@@ -46,15 +58,13 @@ function addToSuperDistrictHandler(map,eventFeature){
     	selectedDistrictGeomLatLngArray.push(LatLng);				
     });
     console.log("selectedDistrictGeomLatLngArray.length:"+selectedDistrictGeomLatLngArray.length);
-    var geomLatLng;
-    var id_In_List=0;
     var districtFeature;
     var geom;
-    var boundaryPtInList=0;
+    var boundaryPtInList=false;
     //var newSuperDistrict=[];------------------------------------------------------------------
     console.log("add method -listOfSuperDistricts.length:"+listOfSuperDistricts.length);
     if(listOfSuperDistricts.length==0){
-    	startingNewSuperDistrict=1;
+    	startingNewSuperDistrict=true;
     	addDistrictFeature(map,eventFeature);
     	//alert("Error: User must first create super district before selecting a district to add");----------------------------------------
     }
@@ -66,69 +76,50 @@ function addToSuperDistrictHandler(map,eventFeature){
     	}else{
     		console.log("selectedDistrictId:"+selectedDistrictId);
     		for(var i=0; i <currentSuperDistrict.length;i++){
-    			if(selectedDistrictId==currentSuperDistrict[i].getProperty('CD115FP')){
-    				id_In_List=1;
+    			if(selectedDistrictId==currentSuperDistrict[i].getProperty('DistrictNo')){
+    			    return;
     			}
     		}
-    		if(id_In_List==1){//selected district has already been selected and is already in the list 
-    			return;
-    		}
-    		else{
-    			//see if selected district's points are contained in the polygons of the districts that are already in the currentSuperDistrict
-
-    	    	for(var i = 0; i<currentSuperDistrict.length;i++){
-    				districtFeature = currentSuperDistrict[i];
-    				geom = districtFeature.getGeometry();
-    				var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
-    				for(var j =0;j<selectedDistrictGeomLatLngArray.length;j++){
-    					selectedDistrictGeomLatLng=selectedDistrictGeomLatLngArray[j];
-    					if(google.maps.geometry.poly.containsLocation(selectedDistrictGeomLatLng, poly)) {
-							boundaryPtInList=1;
-    						console.log("boundaryPtInList:"+boundaryPtInList);
-						}    					
-    				}    						
-    			}    		
-    			if(boundaryPtInList==1){
-    				addDistrictFeature(map,eventFeature);
-    			}else{
-    				alert("Error: Superdistricts must be contiguous when being chosen.");
-    				//console.log("Error: Superdistricts must be contiguous when being chosen.")
-    			}
-    		}
+            //see if selected district's points are contained in the polygons of the districts that are already in the currentSuperDistrict
+            for(var i = 0; i<currentSuperDistrict.length;i++){
+                districtFeature = currentSuperDistrict[i];
+                geom = districtFeature.getGeometry();
+                var poly = new google.maps.Polygon({paths: geom.getAt(0).getArray()});
+                for(var j =0;j<selectedDistrictGeomLatLngArray.length;j++){
+                    selectedDistrictGeomLatLng=selectedDistrictGeomLatLngArray[j];
+                    if(google.maps.geometry.poly.containsLocation(selectedDistrictGeomLatLng, poly)) {
+                        boundaryPtInList=true;
+                        console.log("boundaryPtInList:"+boundaryPtInList);
+                    }
+                }
+            }
+            if(boundaryPtInList==true){
+                addDistrictFeature(map,eventFeature);
+            }else{
+                alert("Error: Superdistricts must be contiguous when being chosen.");
+            }
       	}
 	}
 }
+
 function addDistrictFeature(map,eventFeature){
 	console.log("in addDistrictFeature");
 	var newSuperDistrict=[];
 	console.log("@@@@@@ startingNewSuperDistrict value: "+startingNewSuperDistrict);
-	if(startingNewSuperDistrict==1){
+	if(startingNewSuperDistrict==true){
 		listOfSuperDistricts.push(newSuperDistrict);
 	}
-	startingNewSuperDistrict=0;
+	startingNewSuperDistrict=false;
 	console.log("@@@@@@@@ listOfSuperDistricts.length:"+listOfSuperDistricts.length);
 	var currentSuperDistrict=listOfSuperDistricts[listOfSuperDistricts.length-1];
 	//console.log("number of features in current super-district before adding new feature:"+currentSuperDistrict.length);
 	currentSuperDistrict.push(eventFeature);
 	console.log("number of features in current super-district after adding new feature:"+currentSuperDistrict.length);
-	map.data.setStyle(function(feature) {
-		for(var i =0; i<currentSuperDistrict.length;i++){
-			if(feature.getProperty('CD115FP')==currentSuperDistrict[i].getProperty('CD115FP')){
-				var color=colorFillArray[colorFillArrayLength];//var color= 'grey'; // Make everything grey by default				
-				var strokeColor= 'gold';	
-				return ({/** @type {google.maps.Data.StyleOptions} */
-					clickable: true,
-					fillColor: color,
-					strokeColor: strokeColor,
-					strokeWeight: 2
-				});
-			}
-		}				
-			
+	currentSuperDistrict.forEach(feature => {
+        map.data.overrideStyle(feature, {fillColor: 'gold', strokeColor: 'red'});
 	});
-	
-	document.getElementById("saveButton").className = "btn btn-primary";
 }
+
 function removeDistrictFeatureListener(map){
 	document.getElementById("undoButton").addEventListener('click', function(event) {		
 		removeDistrictFeatureHandler(map);	
@@ -268,7 +259,7 @@ function createSuperDistrictListener(map){
 }
 function createSuperDistrictHandler(map){
 	//var newSuperDistrict=[]; -------------------------------------------------------------------------------
-	startingNewSuperDistrict=1;
+	startingNewSuperDistrict=true;
 	var id_In_List=0;
 	var currentDistrictFeature;
 	var featuresInThisSuperDistrict=[];

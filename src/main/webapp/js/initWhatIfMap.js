@@ -190,9 +190,9 @@ function startSuperDistrictBuild(stateName, stateJson, center){
     }
     selectedState = {name: stateName, features: map.data.addGeoJson(stateJson)};
     selectedState.features.forEach(feature => {
-        map.data.overrideStyle(feature, {fillColor: 'grey', strokeColor: 'black'});
+        map.data.overrideStyle(feature, {fillColor: 'grey', strokeColor: 'black', fillOpacity: 1.0, strokeOpacity: 1.0});
     });
-    selectedState.listener = enableDistrictSelect(selectedState);
+    selectedState.listener = addToSuperDistrictListener(map, selectedState);
     dynamicZoom(selectedState.features);
 }
 
