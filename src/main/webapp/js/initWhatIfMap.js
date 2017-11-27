@@ -5,7 +5,8 @@ const setting = {
     districtZoom: 6,
     defaultYear: 2016,
     strokeDefault: 2,
-    strokeHovered: 4
+    strokeHovered: 4,
+    center: {lat: 38.541291, lng: -99.896488}
 };
 
 var map;
@@ -27,7 +28,7 @@ var selectedYear;
 
 function initializeMap() { 
 	map = new google.maps.Map(document.getElementById('map'), {
-		center: {lat: 38.541291, lng: -99.896488},
+		center: setting.center,
         zoom: setting.countryZoom,
 		mapTypeId: 'roadmap'
 	});
@@ -55,6 +56,9 @@ function initializeMap() {
     });
 
     resetStyle();
+    undoListener(map);
+    resetSuperDistrictListener(map);
+    cancelSuperDistrictListener(map);
 }
 
 function initSearchbox(){
