@@ -1,7 +1,7 @@
 <html><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="/resources/js/carousel.js"></script>
     <script src="https://d3js.org/d3-path.v1.min.js"></script>
@@ -9,15 +9,20 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="/resources/js/data.js"></script>
     <script src="/resources/js/accordionLayout.js"></script>
-    <script src="/resources/js/styling.js"></script>
-    <script src="/resources/js/scatterData.js"></script><!-- test.json as a javascript file-->
-    <script src="/resources/js/eventHandlers.js"></script>
-    <script src="/resources/js/populateWhatIfData.js"></script>
+<!--<script src="/resources/js/whatIfStyling.js"></script>
+    <script src="/resources/js/populateWhatIfData.js"></script> -->
+    <!-- Bring these links back when ready to load results for tests on super districts
+    <script src="/resources/js/lopsidedChart.js"></script>
+    <script src="/resources/js/consistentAdvantageChart.js"></script>
+    <script src="/resources/js/efficiencyGapChart.js"></script>
+    <script src="/resources/js/whatIfMarkerSelection.js"></script>
+    -->
+    <script src="/resources/js/whatIfEventHandlers.js"></script>
     <script src="/resources/js/initWhatIfMap.js"></script>
+    <script src="/resources/js/scatterData.js"></script><!-- this link is test.json as a javascript file-->    
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEISuccfcM7cm-Kil-HufVS9mu3kNKrHM&libraries=places,geometry&callback=initializeWhatIfMap">
-      </script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEISuccfcM7cm-Kil-HufVS9mu3kNKrHM&libraries=places,geometry&callback=initializeMap">
+    </script>
     <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="/resources/style/whatif.css" rel="stylesheet" type="text/css">
   </head>
@@ -86,6 +91,26 @@
             <div class="col-md-6" id="map" style="width:575px;height:450px;"></div>
             <div>
               <a class="btn btn-lg btn-primary" style="; margin-bottom:5px;margin-right:50px">Download Image</a>
+            
+             <div class="col-md-6">              
+                
+              <select id="box1" onChange="selectStateByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
+                <option value="98">New York</option>
+                <option value="7122">North Carolina</option>
+                <option value="142">Virginia</option>
+              </select>
+              <select id="box2" onChange="selectYearByDropDown(this);" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="margin-right:10px">
+                <option value="98">2016</option>
+                <option value="142">2014</option>
+                <option value="142">2012</option>
+                <option value="142">2010</option>
+                <option value="142">2008</option>
+                <option value="142">2006</option>
+                <option value="142">2004</option>
+                <option value="142">2002</option>
+                <option value="142">2000</option>
+              </select>              
+             </div>
             </div>
           </div>
           <div class="col-md-6">
@@ -105,7 +130,7 @@
               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;H.R. 3057</h4>
-            <p class="text-danger" contenteditable="true">-All districts shall be contiguous unless it is necessary to include an
+            <p class="text-danger" contenteditable="false">-All districts shall be contiguous unless it is necessary to include an
               area surrounded by &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
               &nbsp;body of water
               <br>&nbsp;-No district in the state elects exactly 3 representatives and Presidential
@@ -151,13 +176,15 @@
               <br>
             </p>
             <p></p>
-            <a class="btn btn-primary" style="; margin-bottom:5px;margin-right:50px">Create Superdistrict</a>
-            <a class="btn btn-primary" style="margin-bottom:5px;margin-right:40px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     </a>
-            <a class="btn btn-primary" style="margin-bottom:5px;margin-right:10px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Undo &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</a>
-            <a class="btn btn-primary disabled" style="margin-right:50px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Save &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a>
-            <a class="btn btn-primary" style="margin-right:40px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Cancel &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a>
-            <a class="btn btn-primary">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Source Code &nbsp; &nbsp; &nbsp; &nbsp;</a>
+            <a id = "createButton" class="btn btn-primary" style="; margin-bottom:5px;margin-right:50px">Create Superdistrict</a>
+            <a id = "resetButton" class="btn btn-primary" style="margin-bottom:5px;margin-right:40px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     </a>
+            <a  id = "undoButton" class="btn btn-primary" style="margin-bottom:5px;margin-right:10px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Undo&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</a>
+            <a id = "saveButton" class="btn btn-primary disabled" style="margin-right:50px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Save &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a>
+            <a id = "cancelButton" class="btn btn-primary" style="margin-right:40px">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Cancel &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</a>
+            <a href = "https://github.com/ysuo85/Gerrymandering-Analysis" id = "sourceButton" class="btn btn-primary">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Source Code &nbsp; &nbsp; &nbsp; &nbsp;</a>
           </div>
+         
+          
         </div>
       </div>
     </div>

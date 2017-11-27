@@ -40,6 +40,7 @@ dependencies {
 	compile("org.wololo:jts2geojson:0.10.0")
     compile("javax.servlet:jstl")
 	compile("org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE")
+	compile("org.springframework.security:spring-security-core:4.2.3.RELEASE")
 	compile("org.springframework.security:spring-security-web:4.2.3.RELEASE")
 	compile("org.springframework.security:spring-security-config:4.2.3.RELEASE")
 

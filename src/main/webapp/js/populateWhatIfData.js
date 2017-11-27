@@ -1,25 +1,35 @@
 
-function loadSelectedStateFromAnalyzePage(selectedState,selectedYear){
+function selectStateByDropDown(element){
+  selectedState = element.options[element.selectedIndex].text;
+}
+function selectYearByDropDown(element){
   d3.json("/resources/js/test.json", function(filteredData) {
-      //selectedYear = element.options[element.selectedIndex].text;
-        var selectedPair=[
+      selectedYear = element.options[element.selectedIndex].text;
+        selectedPair=[
             ["State",selectedState],
             ["raceYear",selectedYear]
         ];
-       //displayStateWithDescription(selectedState);       
+      /* displayStateWithDescription(selectedState); */ //not needed for the what if page - move zoom on state to another function    
        //get specific rows from data that pertain to the user's selection
        filteredData = filteredData.filter(function(row) {
             return row['State'] == selectedPair[0][1] && row['raceYear']==selectedPair[1][1];
         });
-       //displayVoteSums(filteredData);
-       /*
-       selectDistrictByClickListener(map,filteredData,areaInfoWindow)
+      /* displayVoteSums(filteredData);*/ // not needed for the what if page
+       zoomOnSelectedState(selectedState);
+       selectDistrictByClickListener(map,filteredData);//selectDistrictByClickListener(map,filteredData,areaInfoWindow);
        selectStateByMarker1Click(filteredData);
        selectStateByMarker2Click(filteredData);
        selectStateByMarker3Click(filteredData);
-       */ 
-       // remove old resulst and add the new graph canvas to the body of the webpage
-       /*
+       createSuperDistrictListener(map);
+       addToSuperDistrictListener(map);
+       removeDistrictFeatureListener(map);       
+       saveSuperDistrictListener(map);
+       cancelSuperDistrictListener(map);
+       resetSuperDistrictListener(map); 
+        /*
+         * bring these methods back when ready to load the test results on the superdistricts
+
+       // remove old results and add the new graph canvas to the body of the webpage
        var svg1_Removal = d3.select("#visual"); //lopsided wins chart 
        svg1_Removal.selectAll("*").remove();       
        var svg1 = d3.select("#visual").append("svg")
@@ -41,9 +51,28 @@ function loadSelectedStateFromAnalyzePage(selectedState,selectedYear){
                 .attr("height", height3 + margin2.bottom2)
                 .append("g")
                 .attr("transform", "translate(" + margin2.left2 + "," + margin2.top2 + ")");
+       
         displayLopsidedTestResults(filteredData,svg1);
         displayConsistentAdvantageTestResults(filteredData,svg);
-        displayEfficiencyGapTestResults(filteredData,svg2); 
-        */             
+        displayEfficiencyGapTestResults(filteredData,svg2);
+        */              
     });
+}
+function zoomOnSelectedState(selectedState){
+  console.log("selectedState for zoom:"+selectedState);
+  map.data.forEach(function (feature) {
+    if(feature.getProperty('Name')==selectedState){
+      console.log("successful match");
+      var geom=feature.getGeometry();
+      var latLngArray=[];
+      geom.forEachLatLng(function(LatLng){
+        latLngArray.push(LatLng);
+      });
+      console.log("latLngArray length:"+latLngArray.length);
+      var element = parseInt(latLngArray.length/2) ;
+      var centerLatLng=latLngArray[element];
+      map.setCenter(centerLatLng);
+      map.setZoom(6);
+    }         
+  });
 }
