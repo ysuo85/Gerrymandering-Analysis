@@ -28,11 +28,31 @@ public class RegistrationController {
     @Autowired
     private AuthoritiesService authoritiesService;
 
-//    @Autowired
-//    private EmailServiceImpl emailService;
+    @Autowired
+    private EmailServiceImpl emailService;
 
     private RandomValueStringGenerator keyGenerator = new RandomValueStringGenerator();
 
+
+    @RequestMapping(value="/registrationConfirmed", method = RequestMethod.GET)
+    public String showConfirmationPage(WebRequest request, Model model, @RequestParam("key") String key) {
+
+        User user = userService.findByActivationKey(key);
+
+        if(user != null){
+            user.setEnabled(true);
+            userService.saveUser(user);
+        }else{
+            return "error";
+        }
+
+        return "registrationConfirmed";
+    }
+
+    @RequestMapping(value = "/error", method = RequestMethod.GET)
+    public String showError(WebRequest request, Model model) {
+        return "error";
+    }
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String showRegistrationForm(WebRequest request, Model model) {
@@ -48,6 +68,7 @@ public class RegistrationController {
     public String handleRegisterRedirect(ModelMap model){
         return "index";
     }
+
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String handleRegisterRequest(ModelMap model,HttpServletRequest request,
@@ -80,7 +101,7 @@ public class RegistrationController {
                 System.out.println("SAVING authorities to DB");
                 authoritiesService.saveAuthorities(authorities);
 
-                //sendEmail(user);
+                sendEmail(user, request);
 
                 return "registrationSent";
             }
@@ -90,27 +111,28 @@ public class RegistrationController {
 
     }
 
-    public boolean sendEmail(User user){
+    public boolean sendEmail(User user, HttpServletRequest request){
 
         try{
             String subject = "Gerrymandering Analysis Registration Confirmation";
             String emailBody = "Click this link to activate your account";
-            String link = "";
+            String link = request.getScheme() + "://" + request.getServerName() + "/registrationConfirmed?key=" + user.getActivationKey();
 
             SimpleMailMessage emailToSend = new SimpleMailMessage();
             emailToSend.setTo(user.getUsername());
             emailToSend.setSubject(subject);
             emailToSend.setText(emailBody + link);
-            emailToSend.setFrom("registration@gerrymandering.com");
+            emailToSend.setFrom("cse308sbu@gmail.com");
 
-            //emailService.sendEmail(emailToSend);
+            emailService.sendEmail(emailToSend);
 
         }catch (MailException ex){
-            System.err.println(ex.getMessage());;
+            System.err.println(ex.getMessage());
             return false;
         }
 
         return true;
     }
+
 
 }
