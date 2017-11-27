@@ -1,4 +1,4 @@
-package gerrymandering.service;
+package gerrymandering.bean;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

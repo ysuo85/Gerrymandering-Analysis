@@ -56,7 +56,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <h1 class="text-inverse">Approve Accounts</h1>
+                    <h1 class="text-inverse">Edit Accounts</h1>
                     <div>
                         <table id="table" class="table table-bordered" style="background-color: ghostwhite">
                             <thead>
@@ -67,14 +67,17 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>
-                                    <input class="form-check-input" type="checkbox" value="">
-                                </td>
-                                <td>
-                                    <label class="form-check-label">
-                                        LOREM IPSUM
-                                    </label>
-                                </td>
+                                <c:forEach items="${list}" var="user">
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" value="">
+                                    </td>
+                                    <td>
+                                        <label class="form-check-label">
+                                                ${user}.getUsername
+                                        </label>
+                                    </td>
+                                </c:forEach>
+
                             </tr>
                             </tbody>
                         </table>

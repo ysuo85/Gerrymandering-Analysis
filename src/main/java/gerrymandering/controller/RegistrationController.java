@@ -1,11 +1,13 @@
 package gerrymandering.controller;
+
 import gerrymandering.model.Authorities;
 import gerrymandering.model.User;
-import gerrymandering.service.AuthoritiesService;
-import gerrymandering.service.BCryptEncoder;
-import gerrymandering.service.UserService;
+import gerrymandering.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.ui.Model;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class RegistrationController {
@@ -23,6 +27,11 @@ public class RegistrationController {
     private UserService userService;
     @Autowired
     private AuthoritiesService authoritiesService;
+
+//    @Autowired
+//    private EmailServiceImpl emailService;
+
+    private RandomValueStringGenerator keyGenerator = new RandomValueStringGenerator();
 
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
@@ -41,7 +50,7 @@ public class RegistrationController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public String handleRegisterRequest(ModelMap model,
+    public String handleRegisterRequest(ModelMap model,HttpServletRequest request,
                                         @RequestParam String username,
                                         @RequestParam String password,
                                         @RequestParam String passwordConfirm) {
@@ -58,6 +67,10 @@ public class RegistrationController {
                 user.setUsername(username);
                 user.setPassword(bCryptPasswordEncoder.encode(password));
                 user.setEnabled(false);
+
+                keyGenerator.setLength(40);
+                user.setActivationKey(keyGenerator.generate());
+
                 System.out.println("SAVING user to DB");
                 userService.saveUser(user);
 
@@ -67,6 +80,8 @@ public class RegistrationController {
                 System.out.println("SAVING authorities to DB");
                 authoritiesService.saveAuthorities(authorities);
 
+                //sendEmail(user);
+
                 return "registrationSent";
             }
         }
@@ -74,4 +89,28 @@ public class RegistrationController {
         return "registration";
 
     }
+
+    public boolean sendEmail(User user){
+
+        try{
+            String subject = "Gerrymandering Analysis Registration Confirmation";
+            String emailBody = "Click this link to activate your account";
+            String link = "";
+
+            SimpleMailMessage emailToSend = new SimpleMailMessage();
+            emailToSend.setTo(user.getUsername());
+            emailToSend.setSubject(subject);
+            emailToSend.setText(emailBody + link);
+            emailToSend.setFrom("registration@gerrymandering.com");
+
+            //emailService.sendEmail(emailToSend);
+
+        }catch (MailException ex){
+            System.err.println(ex.getMessage());;
+            return false;
+        }
+
+        return true;
+    }
+
 }

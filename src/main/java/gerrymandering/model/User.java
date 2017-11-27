@@ -13,6 +13,8 @@ public class User {
         private String password;
         @Column(name = "enabled")
         private boolean enabled;
+        @Column(name = "activationKey")
+        private String activationKey;
 
 
         public int getId() {
@@ -45,6 +47,14 @@ public class User {
 
         public void setEnabled(boolean enabled){
             this.enabled = enabled;
+        }
+
+        public String getActivationKey(){
+            return activationKey;
+        }
+
+        public void setActivationKey(String key){
+            this.activationKey = key;
         }
 
 

@@ -23,6 +23,10 @@ public class UserService {
         return userRepository.findById(Id);
     }
 
+    public User findByActivationKey(String activationKey){
+        return userRepository.findByActivationKey(activationKey);
+    }
+
     public void saveUser(User user) {
         userRepository.save(user);
     }
